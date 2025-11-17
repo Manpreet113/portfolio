@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Github, Mail } from "lucide-react";
+import { Github, Mail, Linkedin } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -116,7 +116,7 @@ const Contact = () => {
                 >
                   <Github className="w-5 h-5" />
                   <span className="group-hover:underline">
-                    github.com/manpreet
+                    github.com/manpreet113
                   </span>
                 </a>
                 <a
@@ -125,7 +125,18 @@ const Contact = () => {
                 >
                   <Mail className="w-5 h-5" />
                   <span className="group-hover:underline">
-                    manpreet@example.com
+                    manpreet10542@gmail.com
+                  </span>
+                </a>
+                <a
+                  href="https://linkedin.com/in/manpreet113"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors group"
+                >
+                  <Linkedin className="w-5 h-5" />
+                  <span className="group-hover:underline">
+                    Manpreet Gill
                   </span>
                 </a>
               </div>
@@ -134,7 +145,7 @@ const Contact = () => {
             <div className="border border-border bg-card p-6">
               <h3 className="text-xl font-semibold mb-3">Response Time</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Typically respond within 24-48 hours. Currently managing
+                Typically respond within 24 hours. Currently managing
                 coursework and projects, but I make time for meaningful
                 conversations.
               </p>
