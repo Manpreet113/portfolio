@@ -1,4 +1,0 @@
-name = "portfolio"
-
-[site]
-bucket = "./dist"
