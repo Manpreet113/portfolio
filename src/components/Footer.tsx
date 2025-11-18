@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="py-12 px-6 border-t border-border">
       <div className="max-w-6xl mx-auto">
         {/* ASCII divider */}
-        <div className="font-mono text-xs text-muted-foreground mb-6 overflow-x-auto">
+        <div className="font-mono text-xs text-muted-foreground mb-6 overflow-x-hidden">
           ─────────────────────────────────────────────────────────────────────
         </div>
 

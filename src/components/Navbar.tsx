@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { ThemeToggle } from "./ui/theme-toggle";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -37,7 +38,7 @@ const Navbar = () => {
           </button>
 
           <div className="flex gap-8">
-            {["hero", "skills", "projects", "contact"].map((section) => (
+            {["skills", "projects", "contact"].map((section) => (
               <button
                 key={section}
                 onClick={() => scrollToSection(section)}
@@ -47,6 +48,7 @@ const Navbar = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-foreground transition-all group-hover:w-full" />
               </button>
             ))}
+            <ThemeToggle/>
           </div>
         </div>
       </div>
