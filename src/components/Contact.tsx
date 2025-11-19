@@ -138,7 +138,7 @@ const Contact = () => {
           </form>
 
           {/* Direct Contact Links */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div className="border border-border bg-card p-6">
               <h3 className="text-xl font-semibold mb-4">Direct Contact</h3>
               <div className="space-y-4">
@@ -183,16 +183,6 @@ const Contact = () => {
                 coursework and projects, but I make time for meaningful
                 conversations.
               </p>
-            </div>
-
-            <div className="border border-border bg-card p-6">
-              <h3 className="text-xl font-semibold mb-3">Open To</h3>
-              <ul className="text-sm text-muted-foreground space-y-2">
-                <li>→ Technical discussions</li>
-                <li>→ Learning opportunities</li>
-                <li>→ Project collaborations</li>
-                <li>→ Feedback on my work</li>
-              </ul>
             </div>
           </div>
         </div>

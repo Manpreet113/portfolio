@@ -1,4 +1,5 @@
 import { Code2, Terminal, Globe, GitBranch, Database, Boxes } from "lucide-react";
+import { TechnicalCard } from "./TechnicalCard";
 
 const skills = [
   {
@@ -41,8 +42,8 @@ const skills = [
 
 const Skills = () => {
   return (
-    <section id="skills" className="py-24 px-6 bg-muted/30">
-      <div className="max-w-6xl mx-auto">
+    <section id="skills" className="min-h-screen flex flex-col justify-center py-24 px-6 bg-muted/30 snap-start">
+      <div className="max-w-6xl mx-auto w-full">
         <div className="space-y-4 mb-12">
           <div className="font-mono text-sm text-muted-foreground">
             <span className="text-foreground">$</span> ls skills/
@@ -59,9 +60,9 @@ const Skills = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {skills.map((skill) => (
-            <div
+            <TechnicalCard
               key={skill.name}
-              className="group border border-border bg-card p-6 hover:border-foreground/20 transition-all duration-300"
+              className="group hover:border-foreground/20 transition-all duration-300 bg-card"
             >
               <div className="flex items-start justify-between mb-4">
                 <skill.icon className="w-8 h-8 text-foreground" />
@@ -74,7 +75,7 @@ const Skills = () => {
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {skill.description}
               </p>
-            </div>
+            </TechnicalCard>
           ))}
         </div>
       </div>

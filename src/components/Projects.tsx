@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Github } from "lucide-react";
+import { TechnicalCard } from "./TechnicalCard";
 
 const projects = [
   {
@@ -60,7 +61,7 @@ const Projects = () => {
           </p>
         </div>
 
-        <div className="space-y-8">
+        <TechnicalCard>
           {projects.map((project, index) => (
             <div
               key={index}
@@ -89,7 +90,6 @@ const Projects = () => {
                   )}
                 </div>
               </div>
-
               <p className="text-muted-foreground mb-4 leading-relaxed">
                 {project.description}
               </p>
@@ -122,7 +122,7 @@ const Projects = () => {
               </div>
             </div>
           ))}
-        </div>
+        </TechnicalCard>
       </div>
     </section>
   );

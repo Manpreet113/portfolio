@@ -103,6 +103,7 @@ All colors MUST be HSL.
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 70px;
   }
 
   /* Terminal cursor animation */
@@ -120,4 +121,8 @@ All colors MUST be HSL.
   .text-balance {
     text-wrap: balance;
   }
+  .bg-grid-pattern {
+  background-size: 40px 40px;
+  background-image: radial-gradient(circle, hsl(var(--foreground) / 0.1) 1px, transparent 1px);
+}
 }
