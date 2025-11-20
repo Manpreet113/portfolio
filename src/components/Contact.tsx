@@ -4,18 +4,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Github, Mail, Linkedin } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { api } from "@/lib/api";
 
 const Contact = () => {
-  const { toast } = useToast();
+  const { toast: showToast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
-
-  const API_BASE_URL = import.meta.env.PROD
-  ? "https://folio-backend-production.up.railway.app" // <-- ⚠️ PASTE YOUR REAL RAILWAY URL HERE
-  : "";
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -23,21 +20,9 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/contact`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      await api.post('/contact', formData);
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Something went wrong.");
-      }
-
-      toast({
+      showToast({
         title: "Message sent!",
         description: "Thanks for reaching out. I'll get back to you soon.",
       });
@@ -45,10 +30,10 @@ const Contact = () => {
 
     } catch (error: any) {
       console.error("Contact form error:", error);
-      toast({
+      showToast({
         title: "Error Sending Message",
         description:
-          error.message || "Please try again later or contact me directly.",
+          error.response?.data?.error || error.message || "Please try again later or contact me directly.",
         variant: "destructive",
       });
     } finally {

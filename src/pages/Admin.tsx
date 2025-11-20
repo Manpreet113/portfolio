@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,116 +17,222 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Trash2, Plus } from 'lucide-react';
+import { Trash2, Plus, Pencil, LogOut, X } from 'lucide-react';
+import { Skill, Project } from '@/types';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/context/AuthContext';
+import { Badge } from '@/components/ui/badge';
 
-interface Skill {
-  id: string;
-  name: string;
-  category: string;
-  proficiency: string;
-}
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  tech_stack: string[];
-  github_url?: string;
-  demo_url?: string;
-}
+const iconOptions = ['Code2', 'Terminal', 'Globe', 'GitBranch', 'Database', 'Boxes'];
 
 const Admin = () => {
-  const [skills, setSkills] = useState<Skill[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
+  const queryClient = useQueryClient();
+  const { logout } = useAuth();
+  
   const [isSkillDialogOpen, setIsSkillDialogOpen] = useState(false);
   const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
+  const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
 
   // Form States
-  const [newSkill, setNewSkill] = useState({ name: '', category: '', proficiency: '' });
-  const [newProject, setNewProject] = useState({
+  const [skillForm, setSkillForm] = useState({ name: '', category: '', proficiency: '', icon: '' });
+  const [projectForm, setProjectForm] = useState({
     title: '',
     description: '',
-    tech_stack: '',
     github_url: '',
     demo_url: '',
   });
+  const [techStackInput, setTechStackInput] = useState('');
+  const [techStackTags, setTechStackTags] = useState<string[]>([]);
 
-  const fetchData = async () => {
-    try {
-      const [skillsRes, projectsRes] = await Promise.all([
-        api.get('/skills'),
-        api.get('/projects'),
-      ]);
-      setSkills(skillsRes.data);
-      setProjects(projectsRes.data);
-    } catch (error) {
-      toast.error('Failed to fetch data');
-    }
-  };
+  // Queries
+  const { data: skills = [] } = useQuery<Skill[]>({
+    queryKey: ['skills'],
+    queryFn: async () => {
+      const response = await api.get('/skills');
+      return response.data;
+    },
+  });
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { data: projects = [] } = useQuery<Project[]>({
+    queryKey: ['projects'],
+    queryFn: async () => {
+      const response = await api.get('/projects');
+      return response.data;
+    },
+  });
 
-  const handleAddSkill = async () => {
-    try {
-      await api.post('/skills', newSkill);
-      toast.success('Skill added');
-      setIsSkillDialogOpen(false);
-      setNewSkill({ name: '', category: '', proficiency: '' });
-      fetchData();
-    } catch (error) {
-      toast.error('Failed to add skill');
-    }
-  };
+  // Mutations
+  const createSkillMutation = useMutation({
+    mutationFn: (skill: Partial<Skill>) => api.post('/skills', skill),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['skills'] });
+      toast.success('Skill added successfully');
+      closeSkillDialog();
+    },
+    onError: () => toast.error('Failed to add skill'),
+  });
 
-  const handleDeleteSkill = async (id: string) => {
-    try {
-      await api.delete(`/skills/${id}`);
+  const updateSkillMutation = useMutation({
+    mutationFn: ({ id, ...skill }: Partial<Skill> & { id: string }) => api.put(`/skills/${id}`, skill),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['skills'] });
+      toast.success('Skill updated successfully');
+      closeSkillDialog();
+    },
+    onError: () => toast.error('Failed to update skill'),
+  });
+
+  const deleteSkillMutation = useMutation({
+    mutationFn: (id: string) => api.delete(`/skills/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['skills'] });
       toast.success('Skill deleted');
-      fetchData();
-    } catch (error) {
-      toast.error('Failed to delete skill');
-    }
-  };
+    },
+    onError: () => toast.error('Failed to delete skill'),
+  });
 
-  const handleAddProject = async () => {
-    try {
-      const payload = {
-        ...newProject,
-        tech_stack: newProject.tech_stack.split(',').map((s) => s.trim()),
-      };
-      await api.post('/projects', payload);
-      toast.success('Project added');
-      setIsProjectDialogOpen(false);
-      setNewProject({
-        title: '',
-        description: '',
-        tech_stack: '',
-        github_url: '',
-        demo_url: '',
-      });
-      fetchData();
-    } catch (error) {
-      toast.error('Failed to add project');
-    }
-  };
+  const createProjectMutation = useMutation({
+    mutationFn: (project: Partial<Project>) => api.post('/projects', project),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      toast.success('Project added successfully');
+      closeProjectDialog();
+    },
+    onError: () => toast.error('Failed to add project'),
+  });
 
-  const handleDeleteProject = async (id: string) => {
-    try {
-      await api.delete(`/projects/${id}`);
+  const updateProjectMutation = useMutation({
+    mutationFn: ({ id, ...project }: Partial<Project> & { id: string }) => api.put(`/projects/${id}`, project),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      toast.success('Project updated successfully');
+      closeProjectDialog();
+    },
+    onError: () => toast.error('Failed to update project'),
+  });
+
+  const deleteProjectMutation = useMutation({
+    mutationFn: (id: string) => api.delete(`/projects/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
       toast.success('Project deleted');
-      fetchData();
-    } catch (error) {
-      toast.error('Failed to delete project');
+    },
+    onError: () => toast.error('Failed to delete project'),
+  });
+
+  // Handlers
+  const openSkillDialog = (skill?: Skill) => {
+    if (skill) {
+      setEditingSkill(skill);
+      setSkillForm({
+        name: skill.name,
+        category: skill.category,
+        proficiency: skill.proficiency,
+        icon: skill.icon || '',
+      });
+    } else {
+      setEditingSkill(null);
+      setSkillForm({ name: '', category: '', proficiency: '', icon: '' });
     }
+    setIsSkillDialogOpen(true);
+  };
+
+  const closeSkillDialog = () => {
+    setIsSkillDialogOpen(false);
+    setEditingSkill(null);
+    setSkillForm({ name: '', category: '', proficiency: '', icon: '' });
+  };
+
+  const openProjectDialog = (project?: Project) => {
+    if (project) {
+      setEditingProject(project);
+      setProjectForm({
+        title: project.title,
+        description: project.description,
+        github_url: project.github_url || '',
+        demo_url: project.demo_url || '',
+      });
+      setTechStackTags(project.tech_stack || []);
+    } else {
+      setEditingProject(null);
+      setProjectForm({ title: '', description: '', github_url: '', demo_url: '' });
+      setTechStackTags([]);
+    }
+    setTechStackInput('');
+    setIsProjectDialogOpen(true);
+  };
+
+  const closeProjectDialog = () => {
+    setIsProjectDialogOpen(false);
+    setEditingProject(null);
+    setProjectForm({ title: '', description: '', github_url: '', demo_url: '' });
+    setTechStackTags([]);
+    setTechStackInput('');
+  };
+
+  const handleSaveSkill = () => {
+    const payload = {
+      name: skillForm.name,
+      category: skillForm.category,
+      proficiency: skillForm.proficiency,
+      icon: skillForm.icon || undefined,
+    };
+
+    if (editingSkill) {
+      updateSkillMutation.mutate({ id: editingSkill.id, ...payload });
+    } else {
+      createSkillMutation.mutate(payload);
+    }
+  };
+
+  const handleSaveProject = () => {
+    const payload = {
+      title: projectForm.title,
+      description: projectForm.description,
+      tech_stack: techStackTags,
+      github_url: projectForm.github_url || undefined,
+      demo_url: projectForm.demo_url || undefined,
+    };
+
+    if (editingProject) {
+      updateProjectMutation.mutate({ id: editingProject.id, ...payload });
+    } else {
+      createProjectMutation.mutate(payload);
+    }
+  };
+
+  const handleTechStackKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && techStackInput.trim()) {
+      e.preventDefault();
+      if (!techStackTags.includes(techStackInput.trim())) {
+        setTechStackTags([...techStackTags, techStackInput.trim()]);
+      }
+      setTechStackInput('');
+    }
+  };
+
+  const removeTechStackTag = (tag: string) => {
+    setTechStackTags(techStackTags.filter(t => t !== tag));
   };
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <Button variant="outline" onClick={logout}>
+          <LogOut className="mr-2 h-4 w-4" /> Logout
+        </Button>
+      </div>
       
       <Tabs defaultValue="skills">
         <TabsList className="mb-4">
@@ -139,35 +245,52 @@ const Admin = () => {
             <h2 className="text-xl font-semibold">Skills Management</h2>
             <Dialog open={isSkillDialogOpen} onOpenChange={setIsSkillDialogOpen}>
               <DialogTrigger asChild>
-                <Button><Plus className="mr-2 h-4 w-4" /> Add Skill</Button>
+                <Button onClick={() => openSkillDialog()}><Plus className="mr-2 h-4 w-4" /> Add Skill</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Add New Skill</DialogTitle>
+                  <DialogTitle>{editingSkill ? 'Edit Skill' : 'Add New Skill'}</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
                     <Label>Name</Label>
                     <Input
-                      value={newSkill.name}
-                      onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
+                      value={skillForm.name}
+                      onChange={(e) => setSkillForm({ ...skillForm, name: e.target.value })}
                     />
                   </div>
                   <div>
                     <Label>Category</Label>
                     <Input
-                      value={newSkill.category}
-                      onChange={(e) => setNewSkill({ ...newSkill, category: e.target.value })}
+                      value={skillForm.category}
+                      onChange={(e) => setSkillForm({ ...skillForm, category: e.target.value })}
                     />
                   </div>
                   <div>
                     <Label>Proficiency</Label>
                     <Input
-                      value={newSkill.proficiency}
-                      onChange={(e) => setNewSkill({ ...newSkill, proficiency: e.target.value })}
+                      value={skillForm.proficiency}
+                      onChange={(e) => setSkillForm({ ...skillForm, proficiency: e.target.value })}
                     />
                   </div>
-                  <Button onClick={handleAddSkill}>Save</Button>
+                  <div>
+                    <Label>Icon</Label>
+                    <Select value={skillForm.icon} onValueChange={(value) => setSkillForm({ ...skillForm, icon: value })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select an icon" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {iconOptions.map((icon) => (
+                          <SelectItem key={icon} value={icon}>
+                            {icon}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button onClick={handleSaveSkill}>
+                    {editingSkill ? 'Update' : 'Save'}
+                  </Button>
                 </div>
               </DialogContent>
             </Dialog>
@@ -180,13 +303,22 @@ const Admin = () => {
                   <CardTitle className="text-sm font-medium">
                     {skill.name}
                   </CardTitle>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteSkill(skill.id)}
-                  >
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => openSkillDialog(skill)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => deleteSkillMutation.mutate(skill.id)}
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="text-xs text-muted-foreground">{skill.category}</div>
@@ -202,49 +334,64 @@ const Admin = () => {
             <h2 className="text-xl font-semibold">Projects Management</h2>
             <Dialog open={isProjectDialogOpen} onOpenChange={setIsProjectDialogOpen}>
               <DialogTrigger asChild>
-                <Button><Plus className="mr-2 h-4 w-4" /> Add Project</Button>
+                <Button onClick={() => openProjectDialog()}><Plus className="mr-2 h-4 w-4" /> Add Project</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Add New Project</DialogTitle>
+                  <DialogTitle>{editingProject ? 'Edit Project' : 'Add New Project'}</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
                     <Label>Title</Label>
                     <Input
-                      value={newProject.title}
-                      onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
+                      value={projectForm.title}
+                      onChange={(e) => setProjectForm({ ...projectForm, title: e.target.value })}
                     />
                   </div>
                   <div>
                     <Label>Description</Label>
                     <Input
-                      value={newProject.description}
-                      onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
+                      value={projectForm.description}
+                      onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })}
                     />
                   </div>
                   <div>
-                    <Label>Tech Stack (comma separated)</Label>
+                    <Label>Tech Stack</Label>
                     <Input
-                      value={newProject.tech_stack}
-                      onChange={(e) => setNewProject({ ...newProject, tech_stack: e.target.value })}
+                      value={techStackInput}
+                      onChange={(e) => setTechStackInput(e.target.value)}
+                      onKeyDown={handleTechStackKeyDown}
+                      placeholder="Type and press Enter to add"
                     />
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {techStackTags.map((tag) => (
+                        <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                          {tag}
+                          <X
+                            className="h-3 w-3 cursor-pointer"
+                            onClick={() => removeTechStackTag(tag)}
+                          />
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                   <div>
                     <Label>GitHub URL</Label>
                     <Input
-                      value={newProject.github_url}
-                      onChange={(e) => setNewProject({ ...newProject, github_url: e.target.value })}
+                      value={projectForm.github_url}
+                      onChange={(e) => setProjectForm({ ...projectForm, github_url: e.target.value })}
                     />
                   </div>
                   <div>
                     <Label>Demo URL</Label>
                     <Input
-                      value={newProject.demo_url}
-                      onChange={(e) => setNewProject({ ...newProject, demo_url: e.target.value })}
+                      value={projectForm.demo_url}
+                      onChange={(e) => setProjectForm({ ...projectForm, demo_url: e.target.value })}
                     />
                   </div>
-                  <Button onClick={handleAddProject}>Save</Button>
+                  <Button onClick={handleSaveProject}>
+                    {editingProject ? 'Update' : 'Save'}
+                  </Button>
                 </div>
               </DialogContent>
             </Dialog>
@@ -257,13 +404,22 @@ const Admin = () => {
                   <CardTitle className="text-sm font-medium">
                     {project.title}
                   </CardTitle>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteProject(project.id)}
-                  >
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => openProjectDialog(project)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => deleteProjectMutation.mutate(project.id)}
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <CardDescription>{project.description}</CardDescription>

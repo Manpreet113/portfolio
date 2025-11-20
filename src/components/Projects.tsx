@@ -1,32 +1,19 @@
-import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Github } from "lucide-react";
 import { TechnicalCard } from "./TechnicalCard";
 import { api } from "@/lib/api";
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  tech_stack: string[];
-  github_url?: string;
-  demo_url?: string;
-}
+import { Project } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import ProjectSkeleton from "./ProjectSkeleton";
 
 const Projects = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await api.get("/projects");
-        setProjects(response.data);
-      } catch (error) {
-        console.error("Failed to fetch projects", error);
-      }
-    };
-    fetchProjects();
-  }, []);
+  const { data: projects = [], isLoading, isError } = useQuery({
+    queryKey: ['projects'],
+    queryFn: async () => {
+      const response = await api.get("/projects");
+      return response.data;
+    },
+  });
 
   return (
     <section id="projects" className="py-24 px-6">
@@ -45,53 +32,66 @@ const Projects = () => {
           </p>
         </div>
 
-        <TechnicalCard>
-          {projects.map((project) => (
-            <div
-              key={project.id}
-              className="border border-border bg-card p-6 md:p-8 hover:border-foreground/20 transition-all duration-300"
-            >
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
-                <h3 className="text-2xl font-bold">{project.title}</h3>
-                <div className="flex gap-3">
-                  {project.github_url && (
-                    <a
-                      href={project.github_url}
-                      className="text-muted-foreground hover:text-foreground transition-colors"
-                      aria-label="View on GitHub"
+        {isLoading && <ProjectSkeleton />}
+
+        {isError && (
+          <div className="border border-destructive bg-destructive/10 p-6 rounded-lg">
+            <div className="font-mono text-sm">
+              <p className="text-destructive">$ connection refused</p>
+              <p className="text-destructive mt-2">ERROR: Unable to fetch projects. Backend may be offline.</p>
+            </div>
+          </div>
+        )}
+
+        {!isLoading && !isError && (
+          <TechnicalCard>
+            {projects.map((project) => (
+              <div
+                key={project.id}
+                className="border border-border bg-card p-6 md:p-8 hover:border-foreground/20 transition-all duration-300"
+              >
+                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
+                  <h3 className="text-2xl font-bold">{project.title}</h3>
+                  <div className="flex gap-3">
+                    {project.github_url && (
+                      <a
+                        href={project.github_url}
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label="View on GitHub"
+                      >
+                        <Github className="w-5 h-5" />
+                      </a>
+                    )}
+                    {project.demo_url && (
+                      <a
+                        href={project.demo_url}
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label="View live demo"
+                      >
+                        <ExternalLink className="w-5 h-5" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+                <p className="text-muted-foreground mb-4 leading-relaxed">
+                  {project.description}
+                </p>
+
+                <div className="flex flex-wrap gap-2">
+                  {project.tech_stack.map((tech) => (
+                    <Badge
+                      key={tech}
+                      variant="secondary"
+                      className="font-mono text-xs"
                     >
-                      <Github className="w-5 h-5" />
-                    </a>
-                  )}
-                  {project.demo_url && (
-                    <a
-                      href={project.demo_url}
-                      className="text-muted-foreground hover:text-foreground transition-colors"
-                      aria-label="View live demo"
-                    >
-                      <ExternalLink className="w-5 h-5" />
-                    </a>
-                  )}
+                      {tech}
+                    </Badge>
+                  ))}
                 </div>
               </div>
-              <p className="text-muted-foreground mb-4 leading-relaxed">
-                {project.description}
-              </p>
-
-              <div className="flex flex-wrap gap-2">
-                {project.tech_stack.map((tech) => (
-                  <Badge
-                    key={tech}
-                    variant="secondary"
-                    className="font-mono text-xs"
-                  >
-                    {tech}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          ))}
-        </TechnicalCard>
+            ))}
+          </TechnicalCard>
+        )}
       </div>
     </section>
   );
