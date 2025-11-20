@@ -1,46 +1,40 @@
-import { Code2, Terminal, Globe, GitBranch, Database, Boxes } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Code2, Terminal, Globe, GitBranch, Database, Boxes, LucideIcon } from "lucide-react";
 import { TechnicalCard } from "./TechnicalCard";
+import { api } from "@/lib/api";
 
-const skills = [
-  {
-    name: "Python",
-    icon: Code2,
-    status: "Intermediate",
-    description: "Backend scripting, data structures, automation",
-  },
-  {
-    name: "Rust",
-    icon: Boxes,
-    status: "Learning",
-    description: "Systems programming, memory safety, performance",
-  },
-  {
-    name: "Web Development",
-    icon: Globe,
-    status: "Intermediate",
-    description: "TypeScript, React, Astro, Tailwind CSS",
-  },
-  {
-    name: "Git & Version Control",
-    icon: GitBranch,
-    status: "Intermediate",
-    description: "GitHub workflows, branching strategies, collaboration",
-  },
-  {
-    name: "Linux & Terminal",
-    icon: Terminal,
-    status: "Intermediate",
-    description: "Command line proficiency, shell scripting, system tools",
-  },
-  {
-    name: "Backend Concepts",
-    icon: Database,
-    status: "Learning",
-    description: "APIs, databases, server-side architecture",
-  },
-];
+interface Skill {
+  id: string;
+  name: string;
+  category: string;
+  proficiency: string;
+  icon?: string;
+}
+
+const iconMap: Record<string, LucideIcon> = {
+  Code2,
+  Terminal,
+  Globe,
+  GitBranch,
+  Database,
+  Boxes,
+};
 
 const Skills = () => {
+  const [skills, setSkills] = useState<Skill[]>([]);
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await api.get("/skills");
+        setSkills(response.data);
+      } catch (error) {
+        console.error("Failed to fetch skills", error);
+      }
+    };
+    fetchSkills();
+  }, []);
+
   return (
     <section id="skills" className="min-h-screen flex flex-col justify-center py-24 px-6 bg-muted/30 snap-start">
       <div className="max-w-6xl mx-auto w-full">
@@ -59,24 +53,27 @@ const Skills = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {skills.map((skill) => (
-            <TechnicalCard
-              key={skill.name}
-              className="group hover:border-foreground/20 transition-all duration-300 bg-card"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <skill.icon className="w-8 h-8 text-foreground" />
-                <span className="text-xs font-mono text-muted-foreground px-2 py-1 border border-border">
-                  {skill.status}
-                </span>
-              </div>
+          {skills.map((skill) => {
+            const Icon = (skill.icon && iconMap[skill.icon]) || Code2;
+            return (
+              <TechnicalCard
+                key={skill.id}
+                className="group hover:border-foreground/20 transition-all duration-300 bg-card"
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <Icon className="w-8 h-8 text-foreground" />
+                  <span className="text-xs font-mono text-muted-foreground px-2 py-1 border border-border">
+                    {skill.proficiency}
+                  </span>
+                </div>
 
-              <h3 className="text-lg font-semibold mb-2">{skill.name}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {skill.description}
-              </p>
-            </TechnicalCard>
-          ))}
+                <h3 className="text-lg font-semibold mb-2">{skill.name}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {skill.category}
+                </p>
+              </TechnicalCard>
+            );
+          })}
         </div>
       </div>
     </section>
