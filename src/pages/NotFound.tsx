@@ -79,7 +79,7 @@ const NotFound = () => {
           className="flex-1 p-4 overflow-y-auto space-y-2 text-sm md:text-base"
         >
           {history.map((line, i) => (
-            <div key={i} className="break-words whitespace-pre-wrap">
+            <div key={i} className="wrap-break-word whitespace-pre-wrap">
               {line.startsWith("Error") ? <span className="text-red-400">{line}</span> : line}
             </div>
           ))}
@@ -92,7 +92,7 @@ const NotFound = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleCommand(input)}
-              className="flex-1 bg-transparent outline-none border-none text-foreground caret-primary"
+              className="flex-1 bg-transparent outline-hidden border-none text-foreground caret-primary"
               autoFocus
               autoComplete="off"
             />
