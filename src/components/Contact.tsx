@@ -128,7 +128,7 @@ const Contact = () => {
               <h3 className="text-xl font-semibold mb-4">Direct Contact</h3>
               <div className="space-y-4">
                 <a
-                  href="https://github.com/manpreet"
+                  href="https://github.com/manpreet113"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors group"
