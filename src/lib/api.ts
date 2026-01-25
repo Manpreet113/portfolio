@@ -1,16 +1,33 @@
-import axios from 'axios';
+export type Project = {
+  id: string;
+  title: string;
+  description: string;
+  tech_stack: string[];
+  github_url?: string;
+  demo_url?: string;
+};
 
-export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+export type Skill = {
+  id: string;
+  name: string;
+  category: string;
+  proficiency: string;
+};
 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://localhost:8080";
+
+export async function getPortfolioData() {
+  try {
+    const [projectsRes, skillsRes] = await Promise.all([
+      fetch(`${API_URL}/projects`),
+      fetch(`${API_URL}/skills`)
+    ]);
+    const projects = projectsRes.ok ? await projectsRes.json() : [];
+    const skills = skillsRes.ok ? await skillsRes.json() : [];
+
+    return { projects, skills, isOffline: !projectsRes.ok };
+  } catch (e) {
+    console.error("Backend unavailable", e);
+    return { projects: [], skills: [], isOffline: true };
   }
-  return config;
-});
+}

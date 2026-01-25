@@ -1,0 +1,34 @@
+---
+import '@fontsource/jetbrains-mono';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+import '../styles/global.css';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Systems Engineer Portfolio" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body class="bg-sys-bg text-sys-text font-mono antialiased selection:bg-sys-accent selection:text-sys-bg">
+        <div class="fixed inset-0 pointer-events-none z-50 bg-[url('/scanline.png')] opacity-[0.03]"></div>
+        
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #050505; }
+    ::-webkit-scrollbar-thumb { background: #333; border: 1px solid #050505; }
+    ::-webkit-scrollbar-thumb:hover { background: #00FF9D; }
+</style>

@@ -1,0 +1,16 @@
+---
+interface Props {
+  class?: string;
+  colSpan?: string; // e.g., "col-span-1" or "col-span-2"
+  rowSpan?: string;
+}
+const { class: className, colSpan = "col-span-1", rowSpan = "row-span-1" } = Astro.props;
+---
+<div class={`
+  bg-surface border border-border p-6 rounded-xl relative overflow-hidden group
+  hover:border-border-hover transition-colors duration-300
+  flex flex-col justify-between
+  ${colSpan} ${rowSpan} ${className}
+`}>
+  <slot />
+</div>

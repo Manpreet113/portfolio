@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme {
+  /* The "Industrial" Color Palette */
+  --color-bg: #050505;
+  --color-surface: #0a0a0a;
+  --color-surface-hover: #111111;
+  --color-border: #222222;
+  --color-border-hover: #444444;
+  --color-text-main: #EDEDED;
+  --color-text-muted: #888888;
+  --color-accent: #333333; /* Subtle interactive elements */
+  
+  /* Fonts */
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Animations */
+  --animate-fade-in: fade-in 0.5s ease-out;
+  
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* Base Reset */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { letter-spacing: -0.02em; }
