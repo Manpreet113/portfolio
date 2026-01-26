@@ -1,0 +1,11 @@
+name = "backend-worker"
+main = "build/index.js"
+compatibility_date = "2026-01-26"
+
+[build]
+command = "cargo install -q worker-build@^0.7 && worker-build --release"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "portfolio-db"
+database_id = "7e80e753-493d-4371-8c37-56addeaf1222"

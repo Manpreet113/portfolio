@@ -14,7 +14,7 @@ export type Skill = {
   proficiency: string;
 };
 
-const API_URL = import.meta.env.PUBLIC_API_URL || "http://127.0.0.1:3001";
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://127.0.0.1:8787";
 
 export async function getPortfolioData() {
   try {
@@ -31,7 +31,14 @@ export async function getPortfolioData() {
 
     if (!projectsRes.ok) throw new Error(`Projects API Error: ${projectsRes.statusText}`);
 
-    const projects = await projectsRes.json();
+    const rawProjects = await projectsRes.json();
+    const projects = rawProjects.map((p: any) => ({
+      ...p,
+      tech_stack: typeof p.tech_stack === 'string' 
+        ? p.tech_stack.split(',') 
+        : (p.tech_stack || [])
+    }));
+
     const skills = skillsRes.ok ? await skillsRes.json() : [];
 
     return { 
