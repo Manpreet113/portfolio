@@ -14,14 +14,14 @@ export type Skill = {
   proficiency: string;
 };
 
-const API_URL = import.meta.env.PUBLIC_API_URL || "http://0.0.0.0:3001";
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://127.0.0.1:3001";
 
 export async function getPortfolioData() {
   try {
     const healthRes = await fetch(`${API_URL}/health`).catch(() => null);
 
     if (!healthRes || !healthRes.ok) {
-      throw new Error("System Health Check Failed");
+        throw new Error("System Health Check Failed");
     }
 
     const [projectsRes, skillsRes] = await Promise.all([
@@ -42,11 +42,15 @@ export async function getPortfolioData() {
     };
 
   } catch (e: any) {
+    console.error(`[API Error] Failed to fetch from ${API_URL}:`, e.message);
+    
     return { 
       projects: [], 
       skills: [], 
       isOffline: true, 
-      error: e.message || "Connection Refused (os error 111)" 
+      error: e.cause?.code === 'ECONNREFUSED' 
+        ? "Connection Refused - Backend is down" 
+        : (e.message || "Unknown Error")
     };
   }
 }

@@ -13,7 +13,7 @@ const { projects, skills, isOffline, error } = await getPortfolioData();
     <header class="mb-12 md:mb-20">
       <div class="flex items-center gap-3 mb-6">
         <div class={`w-2 h-2 rounded-full ${isOffline ? 'bg-red-500' : 'bg-emerald-500'} animate-pulse`}></div>
-        <span class="text-xs font-mono tracking-widest text-text-muted">
+        <span id="status-text" class="text-xs font-mono tracking-widest text-text-muted">
           SYSTEM STATUS: {isOffline ? 'OFFLINE' : 'OPERATIONAL'}
         </span>
       </div>

@@ -14,7 +14,7 @@ use axum::middleware;
 pub fn create_router(state: Arc<AppState>) -> Router {
     let governor_conf = GovernorConfigBuilder::default()
         .per_second(10)
-        .burst_size(5)
+        .burst_size(50)
         .use_headers()
         .finish()
         .unwrap();
@@ -26,18 +26,21 @@ pub fn create_router(state: Arc<AppState>) -> Router {
         .route("/api/projects/:id",axum::routing::delete(content::delete_project).put(content::update_project),)
         .layer(middleware::from_fn(auth_middleware));
 
-    let public_routes = Router::new()
-        .route("/health", get(health::health_check))
-        .route("/api/contact", post(contact::contact_handler))
-        .route("/api/skills", get(content::get_skills))
-        .route("/api/projects", get(content::get_projects))
-        .route("/api/login", post(auth::login_handler));
-
-    Router::new()
-        .merge(public_routes)
-        .merge(protected_routes)
+    let api_routes = Router::new()
+        .route("/contact", post(contact::contact_handler))
+        .route("/skills", get(content::get_skills))
+        .route("/projects", get(content::get_projects))
+        .route("/login", post(auth::login_handler))
         .layer(GovernorLayer {
             config: Arc::new(governor_conf),
-        })
+        });
+
+    let health_route = Router::new()
+        .route("/health", get(health::health_check));
+
+    Router::new()
+        .nest("/api", api_routes)
+        .merge(health_route)
+        .merge(protected_routes)
         .with_state(state)
 }

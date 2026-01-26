@@ -21,7 +21,8 @@ async fn main() {
     // Setup CORS
     let cors = CorsLayer::new()
         .allow_origin([
-            "http://localhost:4321".parse().unwrap(), // Astro Dev
+            "http://localhost:4321".parse().unwrap(),
+            "http://127.0.0.1:4321".parse().unwrap(),
             "http://localhost:3001".parse().unwrap(), // Local Test
             state.frontend_url.parse().unwrap(),      // Production URL from ENV
         ])
