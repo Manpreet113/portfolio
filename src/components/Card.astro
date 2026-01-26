@@ -1,14 +1,17 @@
 ---
 interface Props {
   class?: string;
-  colSpan?: string; // e.g., "col-span-1" or "col-span-2"
+  colSpan?: string;
   rowSpan?: string;
 }
 const { class: className, colSpan = "col-span-1", rowSpan = "row-span-1" } = Astro.props;
 ---
 <div class={`
   bg-surface border border-border p-6 rounded-xl relative overflow-hidden group
-  hover:border-border-hover transition-colors duration-300
+  hover:border-white/20 hover:bg-surface-hover/80 
+  transition-all duration-300 ease-out
+  hover:shadow-[0_0_30px_-10px_rgba(255,255,255,0.1)]
+  active:scale-[0.99]
   flex flex-col justify-between
   ${colSpan} ${rowSpan} ${className}
 `}>

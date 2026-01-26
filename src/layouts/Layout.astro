@@ -1,34 +1,43 @@
 ---
 import '@fontsource/jetbrains-mono';
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle.astro'; // Import the toggle
 
 interface Props {
   title: string;
 }
 
 const { title } = Astro.props;
-import '../styles/global.css';
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Systems Engineer Portfolio" />
+		<meta name="description" content="Manpreet | Systems Engineer" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+
+        <script is:inline>
+            const theme = (() => {
+                if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+                    return localStorage.getItem('theme');
+                }
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    return 'dark';
+                }
+                return 'light';
+            })();
+            document.documentElement.setAttribute('data-theme', theme);
+        </script>
 	</head>
-	<body class="bg-sys-bg text-sys-text font-mono antialiased selection:bg-sys-accent selection:text-sys-bg">
-        <div class="fixed inset-0 pointer-events-none z-50 bg-[url('/scanline.png')] opacity-[0.03]"></div>
+	<body class="bg-bg text-text-main font-mono antialiased transition-colors duration-300">
+        <div class="fixed inset-0 pointer-events-none z-50 bg-[url('/scanline.png')] mix-blend-overlay" style="opacity: var(--scanline-opacity)"></div>
         
+        <ThemeToggle />
+
 		<slot />
 	</body>
 </html>
-
-<style is:global>
-    ::-webkit-scrollbar { width: 10px; }
-    ::-webkit-scrollbar-track { background: #050505; }
-    ::-webkit-scrollbar-thumb { background: #333; border: 1px solid #050505; }
-    ::-webkit-scrollbar-thumb:hover { background: #00FF9D; }
-</style>

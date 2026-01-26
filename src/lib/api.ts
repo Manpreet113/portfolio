@@ -14,20 +14,39 @@ export type Skill = {
   proficiency: string;
 };
 
-const API_URL = import.meta.env.PUBLIC_API_URL || "http://localhost:8080";
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://0.0.0.0:3001";
 
 export async function getPortfolioData() {
   try {
+    const healthRes = await fetch(`${API_URL}/health`).catch(() => null);
+
+    if (!healthRes || !healthRes.ok) {
+      throw new Error("System Health Check Failed");
+    }
+
     const [projectsRes, skillsRes] = await Promise.all([
-      fetch(`${API_URL}/projects`),
-      fetch(`${API_URL}/skills`)
+      fetch(`${API_URL}/api/projects`),
+      fetch(`${API_URL}/api/skills`)
     ]);
-    const projects = projectsRes.ok ? await projectsRes.json() : [];
+
+    if (!projectsRes.ok) throw new Error(`Projects API Error: ${projectsRes.statusText}`);
+
+    const projects = await projectsRes.json();
     const skills = skillsRes.ok ? await skillsRes.json() : [];
 
-    return { projects, skills, isOffline: !projectsRes.ok };
-  } catch (e) {
-    console.error("Backend unavailable", e);
-    return { projects: [], skills: [], isOffline: true };
+    return { 
+      projects, 
+      skills, 
+      isOffline: false, 
+      error: null 
+    };
+
+  } catch (e: any) {
+    return { 
+      projects: [], 
+      skills: [], 
+      isOffline: true, 
+      error: e.message || "Connection Refused (os error 111)" 
+    };
   }
 }

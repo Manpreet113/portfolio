@@ -4,77 +4,100 @@ import Card from '../components/Card.astro';
 import TechBadge from '../components/TechBadge.astro';
 import { getPortfolioData } from '../lib/api';
 
-const { projects, skills, isOffline } = await getPortfolioData();
+const { projects, skills, isOffline, error } = await getPortfolioData();
 ---
 
 <Layout title="Manpreet | Systems Engineer">
-  <main class="max-w-6xl mx-auto p-4 md:p-8 pt-20 animate-fade-in">
+  <main class="max-w-6xl mx-auto p-4 md:p-8 pt-12 md:pt-24 animate-fade-in">
     
-    <header class="mb-16">
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-2 h-2 rounded-full bg-white"></div>
-        <span class="text-sm font-mono text-text-muted">SYSTEMS & BACKEND</span>
+    <header class="mb-12 md:mb-20">
+      <div class="flex items-center gap-3 mb-6">
+        <div class={`w-2 h-2 rounded-full ${isOffline ? 'bg-red-500' : 'bg-emerald-500'} animate-pulse`}></div>
+        <span class="text-xs font-mono tracking-widest text-text-muted">
+          SYSTEM STATUS: {isOffline ? 'OFFLINE' : 'OPERATIONAL'}
+        </span>
       </div>
-      <h1 class="text-5xl md:text-7xl font-semibold tracking-tight text-white mb-6">
+      <h1 class="text-5xl md:text-8xl font-bold tracking-tighter text-text-main mb-6">
         Manpreet.
       </h1>
-      <p class="text-xl text-text-muted max-w-2xl leading-relaxed">
-        Building robust infrastructure and high-performance backends.
-        Focused on <span class="text-white">Rust</span>, <span class="text-white">Distributed Systems</span>, and <span class="text-white">Platform Engineering</span>.
+      <p class="text-xl md:text-2xl text-text-muted max-w-2xl leading-relaxed">
+        Building robust infrastructure.
+        <span class="block text-text-main mt-2">Focused on Rust, Distributed Systems, and Platform Engineering.</span>
       </p>
     </header>
 
     {isOffline && (
-      <div class="mb-8 p-4 border border-red-900/50 bg-red-900/10 rounded text-red-200 text-sm font-mono flex items-center gap-3">
-        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-        Back-end services unavailable. Displaying cached/fallback view.
+      <div class="mb-12 p-4 border-l-2 border-red-500 bg-red-500/5 text-red-400 text-xs font-mono flex items-start gap-3 rounded-r-md">
+        <span class="mt-0.5">⚠️</span>
+        <div>
+          <p class="font-bold">[FATAL] Backend Connection Failed</p>
+          <p class="opacity-80 mt-1">Error: {error || "Connection Refused (os error 111)"}</p>
+          <p class="opacity-60 mt-2">> Serving static fallback content...</p>
+        </div>
       </div>
     )}
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[280px]">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-auto md:auto-rows-[280px]">
 
-      <Card colSpan="md:col-span-2">
+      <Card colSpan="md:col-span-2" class="min-h-[280px]">
         <div>
-          <h2 class="text-sm font-mono text-text-muted mb-2">01 // PHILOSOPHY</h2>
-          <p class="text-lg text-white font-medium">
+          <h2 class="text-xs font-mono text-text-muted mb-2 tracking-widest">01 // PHILOSOPHY</h2>
+          <p class="text-xl text-text-main font-medium tracking-tight">
             "Software should be boring."
           </p>
         </div>
-        <div class="mt-auto">
-          <p class="text-text-muted leading-relaxed">
-            I value predictability over flashiness. My work involves designing systems that are type-safe, observable, and easy to maintain. Currently deep-diving into memory safety and concurrency models.
+        <div class="mt-auto pt-8 md:pt-0">
+          <p class="text-text-muted leading-relaxed text-sm">
+            I value predictability over flashiness. My work involves designing systems that are type-safe, observable, and easy to maintain.
           </p>
         </div>
       </Card>
 
-      <Card rowSpan="md:row-span-2">
-        <h2 class="text-sm font-mono text-text-muted mb-4">02 // ARSENAL</h2>
-        <div class="flex flex-wrap gap-2 content-start">
-          {skills.map(skill => (
-            <TechBadge label={skill.name} />
-          ))}
-          {skills.length === 0 && (
-            <>
-              <TechBadge label="Rust" />
-              <TechBadge label="Python" />
-              <TechBadge label="PostgreSQL" />
-              <TechBadge label="Docker" />
-              <TechBadge label="Linux" />
-              <TechBadge label="Tokio" />
-              <TechBadge label="Actix" />
-            </>
-          )}
-        </div>
+      <Card rowSpan="md:row-span-2" class="min-h-[280px]">
+        <h2 class="text-xs font-mono text-text-muted mb-6 tracking-widest">02 // ARSENAL</h2>
+        
+        {skills.length > 0 ? (
+           <div class="flex flex-wrap gap-2 content-start">
+             {skills.map(skill => <TechBadge label={skill.name} />)}
+           </div>
+        ) : (
+          /* Fallback if API fails */
+          <div class="space-y-6">
+            <div>
+              <span class="text-[10px] font-mono text-text-muted/40 uppercase mb-2 block">:: Kernel ::</span>
+              <div class="flex flex-wrap gap-2">
+                <TechBadge label="Rust" />
+                <TechBadge label="C++" />
+                <TechBadge label="Linux" />
+              </div>
+            </div>
+            <div>
+              <span class="text-[10px] font-mono text-text-muted/40 uppercase mb-2 block">:: Network ::</span>
+              <div class="flex flex-wrap gap-2">
+                <TechBadge label="Tokio" />
+                <TechBadge label="gRPC" />
+                <TechBadge label="Postgres" />
+              </div>
+            </div>
+            <div>
+              <span class="text-[10px] font-mono text-text-muted/40 uppercase mb-2 block">:: Infra ::</span>
+              <div class="flex flex-wrap gap-2">
+                <TechBadge label="Docker" />
+                <TechBadge label="Terraform" />
+              </div>
+            </div>
+          </div>
+        )}
       </Card>
 
-      <Card>
+      <Card class="min-h-[280px]">
         <div class="flex justify-between items-start">
-            <h2 class="text-sm font-mono text-text-muted">03 // FEATURED</h2>
-            <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+            <h2 class="text-xs font-mono text-text-muted tracking-widest">03 // FEATURED</h2>
+            <div class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
         </div>
-        <div class="mt-auto">
-          <h3 class="text-xl text-white font-medium mb-2">NoteHole</h3>
-          <p class="text-sm text-text-muted mb-4">Spatial, intent-driven architecture.</p>
+        <div class="mt-auto pt-8 md:pt-0">
+          <h3 class="text-2xl text-text-main font-medium mb-1">NoteHole</h3>
+          <p class="text-xs text-text-muted mb-4 font-mono">Spatial, intent-driven architecture.</p>
           <div class="flex gap-2">
             <TechBadge label="Rust" />
             <TechBadge label="Tauri" />
@@ -82,50 +105,56 @@ const { projects, skills, isOffline } = await getPortfolioData();
         </div>
       </Card>
 
-      <Card class="bg-white text-black hover:bg-gray-200 border-transparent">
-        <h2 class="text-sm font-mono text-gray-500">04 // SOURCE</h2>
-        <div class="mt-auto">
-          <a href="https://github.com/manpreet113" target="_blank" class="block">
-            <h3 class="text-3xl font-bold tracking-tight">GitHub ↗</h3>
-            <p class="text-sm text-gray-600 mt-2">View repositories</p>
-          </a>
-        </div>
-      </Card>
-
-      <Card colSpan="md:col-span-3">
-        <h2 class="text-sm font-mono text-text-muted mb-6">05 // RECENT WORK</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {projects.slice(0, 2).map(project => (
+      <Card colSpan="md:col-span-2" class="min-h-[280px]">
+        <h2 class="text-xs font-mono text-text-muted mb-6 tracking-widest">04 // RECENT ACTIVITY</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {projects.length > 0 ? projects.slice(0, 2).map(project => (
             <div class="group/item">
               <div class="flex justify-between items-baseline mb-2">
-                <h3 class="text-white font-medium group-hover/item:text-blue-400 transition-colors">
+                <h3 class="text-text-main font-medium group-hover/item:text-blue-500 transition-colors">
                   {project.title}
                 </h3>
-                <a href={project.github_url} class="text-xs font-mono text-text-muted hover:text-white">VIEW CODE ↗</a>
+                <a href={project.github_url} class="text-[10px] font-mono text-text-muted hover:text-text-main border-b border-transparent hover:border-text-main transition-all">VIEW CODE</a>
               </div>
               <p class="text-sm text-text-muted line-clamp-2 mb-3">
                 {project.description}
               </p>
-              <div class="flex gap-2">
+              <div class="flex gap-2 opacity-60 group-hover/item:opacity-100 transition-opacity">
                 {project.tech_stack.slice(0, 3).map(t => <TechBadge label={t} />)}
               </div>
             </div>
-          ))}
-          {projects.length === 0 && (
-             <p class="text-text-muted font-mono text-sm">No projects fetched from backend.</p>
+          )) : (
+             /* Console Log Fallback for Empty/Error State */
+             <div class="col-span-2 font-mono text-xs text-text-muted space-y-2 opacity-70">
+                <p>> Initiating handshake with {import.meta.env.PUBLIC_API_URL || "localhost:3001"}...</p>
+                <p class="text-red-400">> Error: {error || "Connection refused"}</p>
+                <p>> Loading fallback data...</p>
+             </div>
           )}
+        </div>
+      </Card>
+
+      <Card class="bg-surface text-text-main hover:bg-surface-hover min-h-[160px] md:min-h-[280px]">
+        <h2 class="text-xs font-mono text-text-muted tracking-widest">05 // SOURCE</h2>
+        <div class="mt-auto pt-8 md:pt-0">
+          <a href="https://github.com/manpreet113" target="_blank" class="block group-hover:translate-x-1 transition-transform">
+            <h3 class="text-3xl font-bold tracking-tighter">GitHub ↗</h3>
+            <p class="text-xs text-text-muted mt-2 font-mono">github.com/manpreet113</p>
+          </a>
         </div>
       </Card>
 
     </div>
 
-    <footer class="mt-20 border-t border-border pt-8 flex justify-between items-center text-sm text-text-muted font-mono">
-      <div>
-        &copy; {new Date().getFullYear()} Manpreet.
+    <footer class="mt-24 border-t border-border pt-8 flex flex-col md:flex-row justify-between items-start md:items-center text-xs text-text-muted font-mono">
+      <div class="mb-4 md:mb-0">
+        <span class="block text-text-main mb-1">MANPREET</span>
+        <span>&copy; {new Date().getFullYear()} // v2.0.4-stable</span>
       </div>
       <div class="flex gap-6">
-        <a href="mailto:manpreet10542@gmail.com" class="hover:text-white transition-colors">Email</a>
-        <a href="https://linkedin.com/in/manpreet113" class="hover:text-white transition-colors">LinkedIn</a>
+        <a href="mailto:manpreet10542@gmail.com" class="hover:text-text-main transition-colors">EMAIL</a>
+        <a href="https://linkedin.com/in/manpreet113" class="hover:text-text-main transition-colors">LINKEDIN</a>
+        <a href="https://github.com/manpreet113" class="hover:text-text-main transition-colors">GITHUB</a>
       </div>
     </footer>
 
