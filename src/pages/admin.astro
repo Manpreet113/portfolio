@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+const API_URL = import.meta.env.PUBLIC_API_URL;
 ---
 
 <Layout title="Command Center">
@@ -50,7 +51,14 @@ import Layout from '../layouts/Layout.astro';
   </div>
 
   <script is:inline>
-    const API_URL = import.meta.env.PUBLIC_API_URL;
+    const container = document.getElementById('admin-container');
+    const API_URL = container.dataset.apiUrl; 
+
+    if (!API_URL) {
+        console.error("FATAL: PUBLIC_API_URL is missing. Check Cloudflare Pages Settings.");
+        alert("System Configuration Error: API URL Missing");
+    }
+
     const loginPanel = document.getElementById('login-panel');
     const dashboard = document.getElementById('dashboard');
     const secretInput = document.getElementById('secret-input');
