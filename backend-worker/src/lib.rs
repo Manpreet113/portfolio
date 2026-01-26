@@ -1,6 +1,7 @@
 use worker::*;
 use serde::{Deserialize, Serialize};
 
+// --- STRUCTS ---
 #[derive(Serialize, Deserialize)]
 struct Project {
     id: i32,
@@ -19,6 +20,23 @@ struct Skill {
     proficiency: String,
 }
 
+// --- CORS HELPERS ---
+
+fn apply_cors(response: Response) -> Response {
+    let mut response = response;
+    let headers = response.headers_mut();
+    
+    // NUCLEAR OPTION: Allow * for now to rule out origin mismatch
+    // (If this still fails, we will switch to echoing the origin)
+    let _ = headers.set("Access-Control-Allow-Origin", "*");
+    let _ = headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    let _ = headers.set("Access-Control-Allow-Headers", "Content-Type, x-admin-secret");
+    let _ = headers.set("Access-Control-Max-Age", "86400"); // Cache preflight for 1 day
+    
+    response
+}
+
+// --- AUTH HELPER ---
 fn is_authorized(req: &Request, env: &Env) -> bool {
     let secret = env.secret("ADMIN_SECRET")
         .map(|s| s.to_string())
@@ -32,26 +50,39 @@ fn is_authorized(req: &Request, env: &Env) -> bool {
 
 #[event(fetch)]
 pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
+    // 0. PANIC HOOK (Logs crashes to Cloudflare dashboard instead of silent 500s)
+    console_error_panic_hook::set_once();
+
+    // 1. GLOBAL PREFLIGHT INTERCEPT
+    // If browser asks "Can I?", we immediately say "YES" and exit.
+    if req.method() == Method::Options {
+        let resp = Response::empty()?;
+        return Ok(apply_cors(resp));
+    }
+
     let router = Router::new();
 
-    router
+    let response_result = router
         .get("/", |_, _| Response::ok("System Operational"))
-        
         .get("/health", |_, _| Response::ok("OK"))
+        
+        // --- PUBLIC READ ---
         .get_async("/api/projects", |_, ctx| async move {
-            let d1 = ctx.env.d1("DB")?;
+            let d1 = ctx.env.d1("DB").expect("DB binding failed");
             let statement = d1.prepare("SELECT * FROM projects ORDER BY id DESC");
             let result = statement.all().await?;
             let projects: Vec<Project> = result.results()?;
             Response::from_json(&projects)
         })
         .get_async("/api/skills", |_, ctx| async move {
-            let d1 = ctx.env.d1("DB")?;
+            let d1 = ctx.env.d1("DB").expect("DB binding failed");
             let statement = d1.prepare("SELECT * FROM skills");
             let result = statement.all().await?;
             let skills: Vec<Skill> = result.results()?;
             Response::from_json(&skills)
         })
+
+        // --- PRIVATE WRITE ---
         .post_async("/api/projects", |mut req, ctx| async move {
             if !is_authorized(&req, &ctx.env) { return Response::error("Unauthorized", 401); }
 
@@ -84,5 +115,17 @@ pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
         })
 
         .run(req, env)
-        .await
+        .await;
+
+    // 2. ATTACH HEADERS TO EVERYTHING
+    // This catches both Success (Ok) and Runtime Errors (Err)
+    match response_result {
+        Ok(resp) => Ok(apply_cors(resp)),
+        Err(e) => {
+            // If the worker crashes, valid HTML is returned which browsers BLOCK.
+            // We force a JSON error with headers so you can actually read it in console.
+            let err_resp = Response::error(format!("Worker Error: {}", e), 500)?;
+            Ok(apply_cors(err_resp))
+        }
+    }
 }
