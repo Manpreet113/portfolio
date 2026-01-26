@@ -1,0 +1,131 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Command Center">
+  <div class="max-w-4xl mx-auto p-8 pt-24">
+    <h1 class="text-3xl font-bold mb-8 text-emerald-400 font-mono">> ADMIN_ACCESS</h1>
+    
+    <div id="login-panel" class="hidden mb-8">
+      <input type="password" id="secret-input" placeholder="Enter Admin Secret" 
+             class="bg-gray-800 border border-gray-700 p-2 rounded text-white w-64">
+      <button id="login-btn" class="bg-emerald-600 px-4 py-2 rounded text-white hover:bg-emerald-500">
+        Authenticate
+      </button>
+    </div>
+
+    <div id="dashboard" class="hidden">
+      
+      <div class="bg-gray-900/50 p-6 rounded-lg border border-gray-800 mb-12">
+        <h2 class="text-xl font-bold mb-4 text-white">Add New Project</h2>
+        <form id="add-project-form" class="space-y-4">
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Title</label>
+            <input name="title" required class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Description</label>
+            <textarea name="description" required rows="3" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white"></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">Tech Stack (comma separated)</label>
+              <input name="tech_stack" placeholder="Rust, Astro" required class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">GitHub URL</label>
+              <input name="github_url" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white">
+            </div>
+          </div>
+          <button type="submit" class="w-full bg-emerald-600 py-2 rounded font-bold text-white hover:bg-emerald-500 transition">
+            Deploy Project
+          </button>
+        </form>
+      </div>
+
+      <h2 class="text-xl font-bold mb-4 text-white">Active Projects</h2>
+      <div id="project-list" class="space-y-4">
+        </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    const API_URL = "https://backend-worker.manpreet.workers.dev"; // UPDATE THIS TO YOUR WORKER URL
+    const loginPanel = document.getElementById('login-panel');
+    const dashboard = document.getElementById('dashboard');
+    const secretInput = document.getElementById('secret-input');
+    
+    function getSecret() { return localStorage.getItem('admin_secret'); }
+    
+    function init() {
+      if (!getSecret()) {
+        loginPanel.classList.remove('hidden');
+      } else {
+        dashboard.classList.remove('hidden');
+        loadProjects();
+      }
+    }
+
+    document.getElementById('login-btn').addEventListener('click', () => {
+      localStorage.setItem('admin_secret', secretInput.value);
+      location.reload();
+    });
+
+    async function loadProjects() {
+      const res = await fetch(`${API_URL}/api/projects`);
+      const projects = await res.json();
+      const list = document.getElementById('project-list');
+      
+      list.innerHTML = projects.map(p => `
+        <div class="flex justify-between items-center bg-gray-900 p-4 rounded border border-gray-800">
+          <div>
+            <h3 class="font-bold text-white">${p.title}</h3>
+            <p class="text-sm text-gray-400">${p.tech_stack}</p>
+          </div>
+          <button onclick="deleteProject(${p.id})" class="text-red-500 hover:text-red-400 text-sm border border-red-900 px-3 py-1 rounded">
+            DELETE
+          </button>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('add-project-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+      
+      data.id = 0;
+      
+      const res = await fetch(`${API_URL}/api/projects`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-secret': getSecret()
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        alert('Project Deployed!');
+        e.target.reset();
+        loadProjects();
+      } else {
+        alert('Failed: ' + res.statusText);
+      }
+    });
+
+    window.deleteProject = async (id) => {
+      if(!confirm('Destroy this project?')) return;
+      
+      const res = await fetch(`${API_URL}/api/projects/${id}`, {
+        method: 'DELETE',
+        headers: { 'x-admin-secret': getSecret() }
+      });
+      
+      if (res.ok) loadProjects();
+      else alert('Unauthorized or Error');
+    };
+
+    init();
+  </script>
+</Layout>
