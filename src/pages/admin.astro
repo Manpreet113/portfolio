@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-const API_URL = import.meta.env.PUBLIC_API_URL;
 ---
 
 <Layout title="Command Center">
@@ -51,6 +50,7 @@ const API_URL = import.meta.env.PUBLIC_API_URL;
   </div>
 
   <script is:inline>
+    const API_URL = import.meta.env.PUBLIC_API_URL;
     const loginPanel = document.getElementById('login-panel');
     const dashboard = document.getElementById('dashboard');
     const secretInput = document.getElementById('secret-input');
