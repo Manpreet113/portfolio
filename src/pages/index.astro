@@ -4,6 +4,8 @@ import Card from '../components/Card.astro';
 import TechBadge from '../components/TechBadge.astro';
 import { getPortfolioData } from '../lib/api';
 
+Astro.response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=300');
+
 const { projects, skills, isOffline, error } = await getPortfolioData();
 ---
 
