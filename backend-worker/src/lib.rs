@@ -1,4 +1,5 @@
 use worker::*;
+use worker::wasm_bindgen::JsValue;
 use serde::{Deserialize, Serialize};
 
 // --- STRUCTS ---
@@ -8,7 +9,11 @@ struct Project {
     title: String,
     description: String,
     tech_stack: String, 
+
+    #[serde(default)]
     github_url: Option<String>,
+
+    #[serde(default)]
     demo_url: Option<String>,
 }
 
@@ -89,14 +94,17 @@ pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
             let p: Project = req.json().await?;
             let d1 = ctx.env.d1("DB")?;
             
+            let gh_url = p.github_url.map(JsValue::from).unwrap_or(JsValue::NULL);
+            let demo_url = p.demo_url.map(JsValue::from).unwrap_or(JsValue::NULL);
+
             let query = "INSERT INTO projects (title, description, tech_stack, github_url, demo_url) VALUES (?, ?, ?, ?, ?)";
             let _ = d1.prepare(query)
                 .bind(&[
                     p.title.into(), 
                     p.description.into(), 
                     p.tech_stack.into(), 
-                    p.github_url.into(), 
-                    p.demo_url.into()
+                    gh_url,
+                    demo_url
                 ])?
                 .run().await?;
 
