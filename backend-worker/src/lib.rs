@@ -49,6 +49,7 @@ fn apply_cors(response: Response) -> Response {
 fn is_authorized(req: &Request, env: &Env) -> bool {
     let secret = env.secret("ADMIN_SECRET")
         .map(|s| s.to_string())
+        .or_else(|_| env.var("ADMIN_SECRET").map(|v| v.to_string()))
         .unwrap_or_else(|_| "disable_if_not_set".to_string());
 
     let header = req.headers().get("x-admin-secret")
