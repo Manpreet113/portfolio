@@ -47,10 +47,11 @@ fn apply_cors(response: Response) -> Response {
 
 // --- AUTH HELPER ---
 fn is_authorized(req: &Request, env: &Env) -> bool {
-    let secret = env.secret("ADMIN_SECRET")
-        .map(|s| s.to_string())
-        .or_else(|_| env.var("ADMIN_SECRET").map(|v| v.to_string()))
-        .unwrap_or_else(|_| "disable_if_not_set".to_string());
+    let sec_res = env.secret("ADMIN_SECRET").map(|s| s.to_string()).ok();
+    let var_res = env.var("ADMIN_SECRET").map(|v| v.to_string()).ok();
+    let secret = sec_res.clone()
+        .or_else(|| var_res.clone())
+        .unwrap_or_else(|| "disable_if_not_set".to_string());
 
     let header = req.headers().get("x-admin-secret")
         .ok().flatten().unwrap_or_default();
