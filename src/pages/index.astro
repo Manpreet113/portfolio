@@ -140,14 +140,22 @@ const { projects, skills, isOffline, error } = await getPortfolioData();
             <div class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
         </div>
         <div class="mt-auto pt-8 md:pt-0">
-          <h3 class="text-2xl text-text-main font-medium mb-1">ax</h3>
-          <p class="text-xs text-text-muted mb-4 font-mono">An AUR helper and Pacman wrapper written in Rust streamlining package management on Arch Linux systems by seamlessly integrating official repository packages and the Arch User Repository (AUR)</p>
-          <div class="flex gap-2">
-            <TechBadge label="Rust" />
-            <TechBadge label="alpm" />
-            <TechBadge label="git2" />
-            <TechBadge label="Linux" />
-          </div>
+          {(() => {
+            const featuredProject = projects.find(p => p.is_featured === true || p.is_featured === 1) || projects[0] || {
+              title: "NoteHole",
+              description: "Spatial, intent-driven architecture for note-taking. Focus on graph-based connections.",
+              tech_stack: ["Rust", "Tauri"]
+            };
+            return (
+              <>
+                <h3 class="text-2xl text-text-main font-medium mb-1">{featuredProject.title}</h3>
+                <p class="text-xs text-text-muted mb-4 font-mono line-clamp-3">{featuredProject.description}</p>
+                <div class="flex flex-wrap gap-2">
+                  {featuredProject.tech_stack.slice(0, 4).map(t => <TechBadge label={t} />)}
+                </div>
+              </>
+            );
+          })()}
         </div>
       </Card>
 

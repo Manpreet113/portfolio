@@ -15,6 +15,9 @@ struct Project {
 
     #[serde(default)]
     demo_url: Option<String>,
+
+    #[serde(default)]
+    is_featured: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -120,6 +123,58 @@ pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
             } else {
                 Response::error("Missing ID", 400)
             }
+        })
+        .put_async("/api/projects/:id", |mut req, ctx| async move {
+            if !is_authorized(&req, &ctx.env) { return Response::error("Unauthorized", 401); }
+            let id = ctx.param("id").unwrap();
+            let p: Project = req.json().await?;
+            let d1 = ctx.env.d1("DB")?;
+            
+            let gh_url = p.github_url.map(JsValue::from).unwrap_or(JsValue::NULL);
+            let demo_url = p.demo_url.map(JsValue::from).unwrap_or(JsValue::NULL);
+            let is_featured = p.is_featured.unwrap_or(false);
+
+            let query = "UPDATE projects SET title=?, description=?, tech_stack=?, github_url=?, demo_url=?, is_featured=? WHERE id=?";
+            let _ = d1.prepare(query)
+                .bind(&[p.title.into(), p.description.into(), p.tech_stack.into(), gh_url, demo_url, JsValue::from(is_featured), id.into()])?
+                .run().await?;
+            Response::ok("Project Updated")
+        })
+        .put_async("/api/projects/:id/featured", |req, ctx| async move {
+            if !is_authorized(&req, &ctx.env) { return Response::error("Unauthorized", 401); }
+            let id = ctx.param("id").unwrap();
+            let d1 = ctx.env.d1("DB")?;
+            
+            // Un-feature all, then feature the target
+            let _ = d1.prepare("UPDATE projects SET is_featured=0").run().await?;
+            let _ = d1.prepare("UPDATE projects SET is_featured=1 WHERE id=?").bind(&[id.into()])?.run().await?;
+            Response::ok("Featured Project Set")
+        })
+        .post_async("/api/skills", |mut req, ctx| async move {
+            if !is_authorized(&req, &ctx.env) { return Response::error("Unauthorized", 401); }
+            let s: Skill = req.json().await?;
+            let d1 = ctx.env.d1("DB")?;
+            let _ = d1.prepare("INSERT INTO skills (name, category, proficiency) VALUES (?, ?, ?)")
+                .bind(&[s.name.into(), s.category.into(), s.proficiency.into()])?
+                .run().await?;
+            Response::ok("Skill Added")
+        })
+        .put_async("/api/skills/:id", |mut req, ctx| async move {
+            if !is_authorized(&req, &ctx.env) { return Response::error("Unauthorized", 401); }
+            let id = ctx.param("id").unwrap();
+            let s: Skill = req.json().await?;
+            let d1 = ctx.env.d1("DB")?;
+            let _ = d1.prepare("UPDATE skills SET name=?, category=?, proficiency=? WHERE id=?")
+                .bind(&[s.name.into(), s.category.into(), s.proficiency.into(), id.into()])?
+                .run().await?;
+            Response::ok("Skill Updated")
+        })
+        .delete_async("/api/skills/:id", |req, ctx| async move {
+            if !is_authorized(&req, &ctx.env) { return Response::error("Unauthorized", 401); }
+            let id = ctx.param("id").unwrap();
+            let d1 = ctx.env.d1("DB")?;
+            let _ = d1.prepare("DELETE FROM skills WHERE id=?").bind(&[id.into()])?.run().await?;
+            Response::ok("Skill Deleted")
         })
 
         .run(req, env)

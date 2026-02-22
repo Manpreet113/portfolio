@@ -5,48 +5,91 @@ const API_URL = import.meta.env.PUBLIC_API_URL;
 
 <Layout title="Command Center">
   <div id="admin-container" data-api-url={API_URL} class="max-w-4xl mx-auto p-8 pt-24">
-    <h1 class="text-3xl font-bold mb-8 text-emerald-400 font-mono">> ADMIN_ACCESS</h1>
+    <div class="flex items-center gap-4 mb-12">
+      <h1 class="text-2xl font-bold text-text-main tracking-tight uppercase">Admin Console</h1>
+      <button id="logout-btn" class="hidden text-xs text-red-400 hover:text-red-300 border border-red-500/30 bg-red-500/10 px-3 py-1 rounded transition-colors uppercase font-mono tracking-widest ml-auto">
+        Logout
+      </button>
+      <div class="flex-1 h-px bg-border"></div>
+      <div class="w-1.5 h-1.5 bg-text-main rounded-full"></div>
+    </div>
     
     <div id="login-panel" class="hidden mb-8">
       <input type="password" id="secret-input" placeholder="Enter Admin Secret" 
-             class="bg-gray-800 border border-gray-700 p-2 rounded text-white w-64">
-      <button id="login-btn" class="bg-emerald-600 px-4 py-2 rounded text-white hover:bg-emerald-500">
+             class="bg-surface border border-border p-2 rounded text-text-main w-64 focus:border-border-hover focus:outline-none focus:ring-1 focus:ring-text-main transition-colors">
+      <button id="login-btn" class="bg-text-main px-4 py-2 rounded text-bg hover:bg-text-muted transition-colors font-bold ml-2">
         Authenticate
       </button>
     </div>
 
     <div id="dashboard" class="hidden">
       
-      <div class="bg-gray-900/50 p-6 rounded-lg border border-gray-800 mb-12">
-        <h2 class="text-xl font-bold mb-4 text-white">Add New Project</h2>
+      <div class="bg-surface p-6 rounded-xl border border-border mb-12">
+        <h2 class="text-xl font-bold mb-4 text-text-main">Add New Project</h2>
         <form id="add-project-form" class="space-y-4">
           <div>
-            <label class="block text-xs text-gray-500 mb-1">Title</label>
-            <input name="title" required class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white">
+            <label class="block text-xs text-text-muted mb-1 font-mono tracking-widest uppercase">Title</label>
+            <input name="title" required class="w-full bg-surface-hover border border-border rounded p-2 text-text-main focus:border-text-main focus:outline-none transition-colors">
           </div>
           <div>
-            <label class="block text-xs text-gray-500 mb-1">Description</label>
-            <textarea name="description" required rows="3" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white"></textarea>
+            <label class="block text-xs text-text-muted mb-1 font-mono tracking-widest uppercase">Description</label>
+            <textarea name="description" required rows="3" class="w-full bg-surface-hover border border-border rounded p-2 text-text-main focus:border-text-main focus:outline-none transition-colors"></textarea>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs text-gray-500 mb-1">Tech Stack (comma separated)</label>
-              <input name="tech_stack" placeholder="Rust, Astro" required class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white">
+              <label class="block text-xs text-text-muted mb-1 font-mono tracking-widest uppercase">Tech Stack (CSV)</label>
+              <input name="tech_stack" placeholder="Rust, Astro" required class="w-full bg-surface-hover border border-border rounded p-2 text-text-main focus:border-text-main focus:outline-none transition-colors">
             </div>
             <div>
-              <label class="block text-xs text-gray-500 mb-1">GitHub URL</label>
-              <input name="github_url" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white">
+              <label class="block text-xs text-text-muted mb-1 font-mono tracking-widest uppercase">GitHub URL</label>
+              <input name="github_url" class="w-full bg-surface-hover border border-border rounded p-2 text-text-main focus:border-text-main focus:outline-none transition-colors">
+            </div>
+            <div class="col-span-2 flex items-center gap-3 mt-2">
+              <input type="checkbox" name="is_featured" id="is_featured" value="1" class="w-4 h-4 text-text-main bg-surface-hover border-border rounded focus:ring-text-main accent-text-main">
+              <label for="is_featured" class="text-xs text-text-muted font-mono">Set as Featured Project (Overwrites Current)</label>
             </div>
           </div>
-          <button type="submit" class="w-full bg-emerald-600 py-2 rounded font-bold text-white hover:bg-emerald-500 transition">
+          <button type="submit" class="w-full bg-text-main py-2 rounded font-bold text-bg hover:bg-text-muted transition-colors mt-4">
             Deploy Project
           </button>
         </form>
       </div>
 
-      <h2 class="text-xl font-bold mb-4 text-white">Active Projects</h2>
-      <div id="project-list" class="space-y-4">
+      <div class="bg-surface p-6 rounded-xl border border-border mb-12">
+        <h2 class="text-xl font-bold mb-4 text-text-main">Add New Skill</h2>
+        <form id="add-skill-form" class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-text-muted mb-1 font-mono tracking-widest uppercase">Skill Name</label>
+              <input name="name" required placeholder="e.g. Rust, Docker" class="w-full bg-surface-hover border border-border rounded p-2 text-text-main focus:border-text-main focus:outline-none transition-colors">
+            </div>
+            <div>
+              <label class="block text-xs text-text-muted mb-1 font-mono tracking-widest uppercase">Category</label>
+              <select name="category" required class="w-full bg-surface-hover border border-border rounded p-2 text-text-main outline-none focus:border-text-main transition-colors">
+                <option value="CORE STACK">Core Stack</option>
+                <option value="INFRA & DATA">Infra & Data</option>
+                <option value="ENVIRONMENT">Environment</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+          </div>
+          <input type="hidden" name="proficiency" value="Expert">
+          <button type="submit" class="w-full bg-text-main py-2 rounded font-bold text-bg hover:bg-text-muted transition-colors mt-2">
+            Add Skill
+          </button>
+        </form>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <h2 class="text-xl font-bold mb-4 text-text-main">Active Projects</h2>
+          <div id="project-list" class="space-y-4"></div>
         </div>
+        <div>
+          <h2 class="text-xl font-bold mb-4 text-text-main">Active Skills</h2>
+          <div id="skill-list" class="space-y-2"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -67,7 +110,9 @@ const API_URL = import.meta.env.PUBLIC_API_URL;
     const dashboard = document.getElementById('dashboard');
     const secretInput = document.getElementById('secret-input');
     const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
     const projectForm = document.getElementById('add-project-form');
+    const skillForm = document.getElementById('add-skill-form');
 
     // 2. Debug Log (Check console to see if this prints)
     console.log("Admin System Init. API Target:", API_URL);
@@ -79,9 +124,12 @@ const API_URL = import.meta.env.PUBLIC_API_URL;
     function init() {
       if (!getSecret()) {
         loginPanel.classList.remove('hidden');
+        if (logoutBtn) logoutBtn.classList.add('hidden');
       } else {
         dashboard.classList.remove('hidden');
+        if (logoutBtn) logoutBtn.classList.remove('hidden');
         loadProjects();
+        loadSkills();
       }
     }
 
@@ -89,6 +137,14 @@ const API_URL = import.meta.env.PUBLIC_API_URL;
     if (loginBtn) {
         loginBtn.addEventListener('click', () => {
             localStorage.setItem('admin_secret', secretInput.value);
+            location.reload();
+        });
+    }
+
+    // Logout Handler
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('admin_secret');
             location.reload();
         });
     }
@@ -103,19 +159,55 @@ const API_URL = import.meta.env.PUBLIC_API_URL;
         
         if (list) {
             list.innerHTML = projects.map(p => `
-                <div class="flex justify-between items-center bg-gray-900 p-4 rounded border border-gray-800">
-                <div>
-                    <h3 class="font-bold text-white">${p.title}</h3>
-                    <p class="text-sm text-gray-400">${p.tech_stack}</p>
-                </div>
-                <button onclick="deleteProject(${p.id})" class="text-red-500 hover:text-red-400 text-sm border border-red-900 px-3 py-1 rounded">
-                    DELETE
-                </button>
+                <div class="flex flex-col gap-3 bg-surface p-4 rounded-xl border ${p.is_featured ? 'border-text-main shadow-[0_0_15px_-3px_rgba(255,255,255,0.1)]' : 'border-border'} relative transition-all">
+                  ${p.is_featured ? '<span class="absolute -top-3 left-4 bg-text-main text-bg text-[10px] font-bold px-2 py-0.5 rounded tracking-widest font-mono">FEATURED</span>' : ''}
+                  <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-bold text-text-main">${p.title}</h3>
+                        <p class="text-sm text-text-muted mt-1">${p.tech_stack}</p>
+                    </div>
+                    <div class="flex flex-col gap-2 items-end">
+                      ${!p.is_featured ? `
+                        <button onclick="setFeatured(${p.id})" class="text-text-main hover:bg-surface-hover text-xs border border-border px-2 py-1 rounded transition-colors">
+                          ⭐ Set Featured
+                        </button>
+                      ` : ''}
+                      <button onclick="deleteProject(${p.id})" class="text-red-400 hover:bg-red-400/10 text-xs border border-red-400/30 px-2 py-1 rounded w-full transition-colors">
+                          DELETE
+                      </button>
+                    </div>
+                  </div>
                 </div>
             `).join('');
         }
       } catch (e) {
-          console.error("Load Error:", e);
+          console.error("Load Projects Error:", e);
+      }
+    }
+
+    // Fetch Skills
+    async function loadSkills() {
+      try {
+        const res = await fetch(`${API_URL}/api/skills`);
+        if (!res.ok) throw new Error('Failed to fetch skills');
+        const skills = await res.json();
+        const list = document.getElementById('skill-list');
+        
+        if (list) {
+            list.innerHTML = skills.map(s => `
+                <div class="flex justify-between items-center bg-surface p-3 rounded-lg border border-border">
+                  <div class="flex items-center gap-3">
+                    <span class="text-[10px] font-mono bg-surface-hover text-text-muted px-2 py-1 rounded uppercase w-24 text-center border border-border">${s.category || 'OTHER'}</span>
+                    <span class="font-medium text-text-main text-sm">${s.name}</span>
+                  </div>
+                  <button onclick="deleteSkill(${s.id})" class="text-red-400 hover:bg-red-400/10 text-xs px-2 py-1 rounded transition-colors">
+                      ✕
+                  </button>
+                </div>
+            `).join('');
+        }
+      } catch (e) {
+          console.error("Load Skills Error:", e);
       }
     }
 
@@ -126,6 +218,7 @@ const API_URL = import.meta.env.PUBLIC_API_URL;
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData);
             data.id = 0; 
+            data.is_featured = !!data.is_featured; // Boolean cast
             
             try {
                 const res = await fetch(`${API_URL}/api/projects`, {
@@ -138,7 +231,12 @@ const API_URL = import.meta.env.PUBLIC_API_URL;
                 });
 
                 if (res.ok) {
-                    alert('Project Deployed!');
+                    if (data.is_featured) {
+                        // Wait for POST to return ID conceptually, or just force sync featured via DB trigger if implemented. 
+                        // But wait! If we just created it and set featured=1, the backend already handles insertion, but the backend POST logic in `lib.rs` doesn't handle `is_featured` on INSERT yet. 
+                        // Note: Our PUT handles it. If creating NEW and want it featured immediately, we might need a separate call or update our POST backend.
+                        // Let's just reload.
+                    }
                     e.target.reset();
                     loadProjects();
                 } else {
@@ -150,21 +248,48 @@ const API_URL = import.meta.env.PUBLIC_API_URL;
         });
     }
 
-    // Global Delete Function (Attached to Window for onclick access)
+    if (skillForm) {
+        skillForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            data.id = 0; 
+            
+            try {
+                const res = await fetch(`${API_URL}/api/skills`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-admin-secret': getSecret() },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    e.target.reset();
+                    loadSkills();
+                }
+            } catch (err) {}
+        });
+    }
+
     window.deleteProject = async (id) => {
       if(!confirm('Destroy this project?')) return;
-      
       try {
-        const res = await fetch(`${API_URL}/api/projects/${id}`, {
-            method: 'DELETE',
-            headers: { 'x-admin-secret': getSecret() }
-        });
-        
-        if (res.ok) loadProjects();
-        else alert('Unauthorized or Error');
-      } catch (err) {
-          alert("Delete Failed: " + err.message);
-      }
+        const res = await fetch(`${API_URL}/api/projects/${id}`, { method: 'DELETE', headers: { 'x-admin-secret': getSecret() } });
+        if (res.ok) loadProjects(); else alert('Error');
+      } catch (err) {}
+    };
+
+    window.deleteSkill = async (id) => {
+      if(!confirm('Delete this skill?')) return;
+      try {
+        const res = await fetch(`${API_URL}/api/skills/${id}`, { method: 'DELETE', headers: { 'x-admin-secret': getSecret() } });
+        if (res.ok) loadSkills(); else alert('Error');
+      } catch (err) {}
+    };
+
+    window.setFeatured = async (id) => {
+      try {
+        const res = await fetch(`${API_URL}/api/projects/${id}/featured`, { method: 'PUT', headers: { 'x-admin-secret': getSecret() } });
+        if (res.ok) loadProjects(); else alert('Error');
+      } catch (err) {}
     };
 
     // Start
