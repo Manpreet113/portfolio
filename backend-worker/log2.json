@@ -1,0 +1,93 @@
+{
+    "wallTime": 13,
+    "cpuTime": 11,
+    "truncated": false,
+    "executionModel": "stateless",
+    "outcome": "ok",
+    "scriptVersion": {
+        "id": "68b347a9-da64-405c-b36e-f86f5be0c392"
+    },
+    "scriptName": "backend-worker",
+    "diagnosticsChannelEvents": [],
+    "exceptions": [],
+    "logs": [],
+    "eventTimestamp": 1771750387315,
+    "event": {
+        "request": {
+            "url": "https://data.manpreet.tech/api/projects/1",
+            "method": "PUT",
+            "headers": {
+                "accept": "*/*",
+                "accept-encoding": "gzip, br",
+                "cf-connecting-ip": "2409:40d6:101c:8394:a8d3:757f:19f0:39b3",
+                "cf-ipcountry": "IN",
+                "cf-ray": "9d1d40508932f924",
+                "cf-visitor": "{\"scheme\":\"https\"}",
+                "connection": "Keep-Alive",
+                "content-length": "124",
+                "content-type": "application/json",
+                "host": "data.manpreet.tech",
+                "user-agent": "curl/8.18.0",
+                "x-admin-secret": "REDACTED",
+                "x-forwarded-proto": "https",
+                "x-real-ip": "2409:40d6:101c:8394:a8d3:757f:19f0:39b3"
+            },
+            "cf": {
+                "httpProtocol": "HTTP/2",
+                "requestPriority": "weight=16;exclusive=0;group=0;group-weight=0",
+                "edgeRequestKeepAliveStatus": 1,
+                "requestHeaderNames": {},
+                "clientTcpRtt": 133,
+                "colo": "SIN",
+                "asn": 55836,
+                "asOrganization": "Reliance Jio Infocomm Limited",
+                "country": "IN",
+                "isEUCountry": false,
+                "city": "Delhi",
+                "continent": "AS",
+                "region": "Delhi",
+                "regionCode": "DL",
+                "timezone": "Asia/Kolkata",
+                "longitude": "77.23149",
+                "latitude": "28.65195",
+                "postalCode": "110001",
+                "tlsVersion": "TLSv1.3",
+                "tlsCipher": "AEAD-AES256-GCM-SHA384",
+                "tlsClientRandom": "MpxKz3zhrdRIk53fq9ipD5TUQJOkdKFvc385ht9316o=",
+                "tlsClientCiphersSha1": "hCCNuWP9ky6AR69i97wdKYbhFQo=",
+                "tlsClientExtensionsSha1": "GQ5kluei/Xx6OAJyC5ndcoWOJLE=",
+                "tlsClientExtensionsSha1Le": "JE5+bfgPv1p5fbM9YkCylMeVxAg=",
+                "tlsExportedAuthenticator": {
+                    "clientHandshake": "7b1d6871f16b3e5fd9cb38ef043e82553785314a6446628db993e63ee4daf152ebf12e992116fec2f90dbc9ea55a8c90",
+                    "serverHandshake": "99c70a0a0ea742885ac51ba943a6c490ccfad1c8b441d712dc8bdfa42988ca8696d74320233f840d6960e2de06a3b592",
+                    "clientFinished": "f5acdeda544af1cebe99759899661254b0579a54d9aff5e01b65cb40c1f46d2321cd47b67b927fe06a9303eb31a927a9",
+                    "serverFinished": "7faffab87a14525d503be96d5f571f27bbc2fb7ad8f7fbceb9969f6d712db5d677864d5763fc81abb68fd92f43866a17"
+                },
+                "tlsClientHelloLength": "1558",
+                "tlsClientAuth": {
+                    "certPresented": "0",
+                    "certVerified": "NONE",
+                    "certRevoked": "0",
+                    "certIssuerDN": "",
+                    "certSubjectDN": "",
+                    "certIssuerDNRFC2253": "",
+                    "certSubjectDNRFC2253": "",
+                    "certIssuerDNLegacy": "",
+                    "certSubjectDNLegacy": "",
+                    "certSerial": "",
+                    "certIssuerSerial": "",
+                    "certSKI": "",
+                    "certIssuerSKI": "",
+                    "certFingerprintSHA1": "",
+                    "certFingerprintSHA256": "",
+                    "certNotBefore": "",
+                    "certNotAfter": ""
+                },
+                "verifiedBotCategory": ""
+            }
+        },
+        "response": {
+            "status": 500
+        }
+    }
+}
