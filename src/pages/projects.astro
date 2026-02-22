@@ -1,0 +1,135 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+import TechBadge from '../components/TechBadge.astro';
+import { getPortfolioData } from '../lib/api';
+
+const { projects, isOffline, error } = await getPortfolioData();
+
+// Fallback data mapping if API doesn't provide the exact matches
+const fallbackProjects = [
+  {
+    title: "raur",
+    description: "A robust AUR helper written in Rust. Features Arch-chroot integration and safe dependency resolution.",
+    tech_stack: ["Rust", "Tokio", "git2"],
+    github_url: "https://github.com/manpreet113/raur",
+    docs_url: "#",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" class="opacity-60"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3M13 15h4M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/></svg>`
+  },
+  {
+    title: "NoteHole",
+    description: "Spatial, intent-driven architecture for note-taking. Focus on graph-based connections.",
+    tech_stack: ["Rust", "Tauri", "Svelte"],
+    github_url: "https://github.com/manpreet113",
+    website_url: "#",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" class="opacity-60"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>`
+  },
+  {
+    title: "Distri-KV",
+    description: "A distributed key-value store built from scratch. Implements Raft consensus for fault tolerance.",
+    tech_stack: ["Rust", "gRPC", "Raft"],
+    github_url: "https://github.com/manpreet113",
+    docs_url: "#",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" class="opacity-60"><rect width="18" height="18" x="3" y="3" rx="2" stroke="currentColor" stroke-width="2"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3M8 12h8"/></svg>` // Just a generic icon since the exact one is custom
+  },
+  {
+    title: "cfg-Wizard",
+    description: "A CLI tool for managing dotfiles across multiple machines with encrypted secrets support.",
+    tech_stack: ["Go", "Cobra", "Age"],
+    github_url: "https://github.com/manpreet113",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" class="opacity-60"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>`
+  }
+];
+
+const displayProjects = projects && projects.length > 0 
+  ? projects.map((apiProj: any) => {
+      // Find matching fallback to steal its SVG icon if possible
+      const match = fallbackProjects.find(f => f.title.toLowerCase() === apiProj.title.toLowerCase());
+      return {
+        ...apiProj,
+        icon: match ? match.icon : null
+      };
+    })
+  : fallbackProjects;
+---
+
+<Layout title="Projects | Manpreet">
+  <main class="max-w-6xl mx-auto p-4 md:p-8 pt-12 animate-fade-in">
+    
+    <nav class="flex items-center gap-6 mb-16">
+      <h1 class="text-2xl font-bold tracking-tighter text-text-main">
+        Manpreet.
+      </h1>
+      <a href="/" class="text-sm font-mono text-text-muted hover:text-text-main transition-colors flex items-center gap-2">
+        <span>&larr;</span> Back to Home
+      </a>
+    </nav>
+
+    <header class="mb-16">
+      <h2 class="text-5xl md:text-8xl font-bold tracking-tighter text-text-main mb-6">
+        Projects.
+      </h2>
+      <p class="text-xl md:text-2xl text-text-muted max-w-2xl leading-relaxed">
+        A collection of distributed systems, CLI tools, and infrastructure experiments.
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {displayProjects.map((project: any) => (
+        <Card class="min-h-[260px] flex flex-col group/project">
+          <div class="flex justify-end mb-6 md:mb-12">
+            {project.icon ? (
+              <div set:html={project.icon} class="text-text-muted w-8 h-8 flex items-center justify-center rounded-md" />
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-text-muted opacity-60"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            )}
+          </div>
+          
+          <h3 class="text-3xl text-text-main font-medium group-hover/project:text-blue-500 transition-colors mb-4">
+            {project.title}
+          </h3>
+          
+          <p class="text-sm text-text-muted mb-8 leading-relaxed">
+            {project.description}
+          </p>
+
+          <div class="mt-auto">
+            <div class="flex flex-wrap gap-2 mb-6">
+              {project.tech_stack.slice(0, 3).map((t: string) => <TechBadge label={t} />)}
+            </div>
+
+            <div class="flex gap-3 text-xs font-mono">
+              {project.github_url && (
+                <a href={project.github_url} target="_blank" class="px-3 py-1.5 border border-border rounded text-text-muted hover:text-text-main hover:border-text-main transition-all flex items-center gap-1.5">
+                  Source ↗
+                </a>
+              )}
+              {project.docs_url || project.website_url ? (
+                <a href={project.docs_url || project.website_url || "#"} target="_blank" class="px-3 py-1.5 border border-border rounded text-text-muted hover:text-text-main hover:border-text-main transition-all flex items-center gap-1.5">
+                  {project.docs_url ? 'Docs ↗' : 'Website ↗'}
+                </a>
+              ) : project.title === 'Distri-KV' ? (
+                <a href="#" class="px-3 py-1.5 border border-border rounded text-text-muted hover:text-text-main hover:border-text-main transition-all flex items-center gap-1.5">
+                  Whitepaper ↗
+                </a>
+              ) : null}
+            </div>
+          </div>
+        </Card>
+      ))}
+    </div>
+
+    <footer class="mt-24 border-t border-border pt-8 flex flex-col md:flex-row justify-between items-start md:items-center text-xs text-text-muted font-mono">
+      <div class="mb-4 md:mb-0">
+        <span class="block text-text-main mb-1">MANPREET</span>
+        <span>&copy; {new Date().getFullYear()} // v2.0.4-stable</span>
+      </div>
+      <div class="flex gap-6">
+        <a href="mailto:manpreet10542@gmail.com" class="hover:text-text-main transition-colors">EMAIL</a>
+        <a href="https://linkedin.com/in/manpreet113" class="hover:text-text-main transition-colors">LINKEDIN</a>
+        <a href="https://github.com/manpreet113" class="hover:text-text-main transition-colors">GITHUB</a>
+      </div>
+    </footer>
+
+  </main>
+</Layout>

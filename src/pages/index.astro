@@ -14,7 +14,7 @@ const { projects, skills, isOffline, error } = await getPortfolioData();
     
     <header class="mb-12 md:mb-20">
       <div class="flex items-center gap-3 mb-6">
-        <div class={`w-2 h-2 rounded-full ${isOffline ? 'bg-red-500' : 'bg-emerald-500'} animate-pulse`}></div>
+        <div class={`w-1.5 h-1.5 rounded-sm ${isOffline ? 'bg-red-500' : 'bg-emerald-500'} animate-pulse`}></div>
         <span id="status-text" class="text-xs font-mono tracking-widest text-text-muted">
           SYSTEM STATUS: {isOffline ? 'OFFLINE' : 'OPERATIONAL'}
         </span>
@@ -58,35 +58,77 @@ const { projects, skills, isOffline, error } = await getPortfolioData();
       <Card rowSpan="md:row-span-2" class="min-h-[280px]">
         <h2 class="text-xs font-mono text-text-muted mb-6 tracking-widest">02 // ARSENAL</h2>
         
-        {skills.length > 0 ? (
-           <div class="flex flex-wrap gap-2 content-start">
-             {skills.map(skill => <TechBadge label={skill.name} />)}
-           </div>
-        ) : (
-          /* Fallback if API fails */
+        {skills.length > 0 ? (() => {
+          const core = skills.filter(s => ['Rust', 'NextJS', 'React', 'Tauri', 'C++', 'Go'].includes(s.name));
+          const infra = skills.filter(s => ['CF Workers', 'D1', 'Docker', 'Terraform', 'Postgres', 'Redis', 'gRPC'].includes(s.name));
+          const env = skills.filter(s => ['Arch', 'Neovim', 'Git', 'Linux', 'Linux / Arch'].includes(s.name));
+          const other = skills.filter(s => !core.includes(s) && !infra.includes(s) && !env.includes(s));
+          
+          return (
+            <div class="space-y-6">
+              {core.length > 0 && (
+                <div>
+                  <span class="text-[10px] font-mono text-text-muted uppercase mb-3 block tracking-widest">[ CORE STACK ]</span>
+                  <div class="flex flex-wrap gap-2">
+                    {core.map(skill => <TechBadge label={skill.name} />)}
+                  </div>
+                </div>
+              )}
+              {infra.length > 0 && (
+                <div class={core.length > 0 ? "mt-6" : ""}>
+                  <span class="text-[10px] font-mono text-text-muted uppercase mb-3 block tracking-widest">[ INFRA & DATA ]</span>
+                  <div class="flex flex-wrap gap-2">
+                    {infra.map(skill => <TechBadge label={skill.name} />)}
+                  </div>
+                </div>
+              )}
+              {env.length > 0 && (
+                <div class={(core.length > 0 || infra.length > 0) ? "mt-6" : ""}>
+                  <span class="text-[10px] font-mono text-text-muted uppercase mb-3 block tracking-widest">[ ENVIRONMENT ]</span>
+                  <div class="flex flex-wrap gap-2">
+                    {env.map(skill => <TechBadge label={skill.name} />)}
+                  </div>
+                </div>
+              )}
+              {other.length > 0 && (
+                <div class="mt-auto pt-8 flex flex-wrap gap-2">
+                    {other.map(skill => <TechBadge label={skill.name} />)}
+                </div>
+              )}
+            </div>
+          );
+        })() : (
+          /* Fallback if API fails or returns empty */
           <div class="space-y-6">
             <div>
-              <span class="text-[10px] font-mono text-text-muted/40 uppercase mb-2 block">:: Kernel ::</span>
+              <span class="text-[10px] font-mono text-text-muted uppercase mb-3 block tracking-widest">[ CORE STACK ]</span>
               <div class="flex flex-wrap gap-2">
                 <TechBadge label="Rust" />
-                <TechBadge label="C++" />
-                <TechBadge label="Linux" />
+                <TechBadge label="React" />
+                <TechBadge label="Tauri" />
               </div>
             </div>
-            <div>
-              <span class="text-[10px] font-mono text-text-muted/40 uppercase mb-2 block">:: Network ::</span>
+            <div class="mt-6">
+              <span class="text-[10px] font-mono text-text-muted uppercase mb-3 block tracking-widest">[ INFRA & DATA ]</span>
               <div class="flex flex-wrap gap-2">
-                <TechBadge label="Tokio" />
-                <TechBadge label="gRPC" />
-                <TechBadge label="Postgres" />
-              </div>
-            </div>
-            <div>
-              <span class="text-[10px] font-mono text-text-muted/40 uppercase mb-2 block">:: Infra ::</span>
-              <div class="flex flex-wrap gap-2">
+                <TechBadge label="CF Workers" />
+                <TechBadge label="D1" />
                 <TechBadge label="Docker" />
-                <TechBadge label="Terraform" />
               </div>
+            </div>
+            <div class="mt-6">
+              <span class="text-[10px] font-mono text-text-muted uppercase mb-3 block tracking-widest">[ ENVIRONMENT ]</span>
+              <div class="flex flex-wrap gap-2">
+                <TechBadge label="Arch" />
+                <TechBadge label="Neovim" />
+                <TechBadge label="Git" />
+              </div>
+            </div>
+            <div class="mt-auto pt-8 flex flex-wrap gap-2">
+                <TechBadge label="Rust" />
+                <TechBadge label="Linux / Arch" />
+                <TechBadge label="Git Internals" />
+                <TechBadge label="Tokio" />
             </div>
           </div>
         )}
@@ -98,41 +140,69 @@ const { projects, skills, isOffline, error } = await getPortfolioData();
             <div class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
         </div>
         <div class="mt-auto pt-8 md:pt-0">
-          <h3 class="text-2xl text-text-main font-medium mb-1">NoteHole</h3>
-          <p class="text-xs text-text-muted mb-4 font-mono">Spatial, intent-driven architecture.</p>
+          <h3 class="text-2xl text-text-main font-medium mb-1">ax</h3>
+          <p class="text-xs text-text-muted mb-4 font-mono">An AUR helper and Pacman wrapper written in Rust streamlining package management on Arch Linux systems by seamlessly integrating official repository packages and the Arch User Repository (AUR)</p>
           <div class="flex gap-2">
             <TechBadge label="Rust" />
-            <TechBadge label="Tauri" />
+            <TechBadge label="alpm" />
+            <TechBadge label="git2" />
+            <TechBadge label="Linux" />
           </div>
         </div>
       </Card>
 
-      <Card colSpan="md:col-span-2" class="min-h-[280px]">
-        <h2 class="text-xs font-mono text-text-muted mb-6 tracking-widest">04 // RECENT ACTIVITY</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {projects.length > 0 ? projects.slice(0, 2).map(project => (
-            <div class="group/item">
-              <div class="flex justify-between items-baseline mb-2">
-                <h3 class="text-text-main font-medium group-hover/item:text-blue-500 transition-colors">
-                  {project.title}
-                </h3>
-                <a href={project.github_url} class="text-[10px] font-mono text-text-muted hover:text-text-main border-b border-transparent hover:border-text-main transition-all">VIEW CODE</a>
+      <Card colSpan="md:col-span-2" class="min-h-[280px] group/card cursor-pointer relative" onclick="window.location.href='/projects'">
+        <div class="flex justify-between items-start mb-6">
+            <h2 class="text-xs font-mono text-text-muted tracking-widest">04 // SELECTED WORK</h2>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-text-main group-hover/card:-translate-y-1 group-hover/card:translate-x-1 transition-transform"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+        </div>
+        
+        <div class="mt-auto pt-4 md:pt-0 flex flex-col h-full justify-end pb-2">
+            
+            {projects.length > 0 ? (
+              <div class="relative overflow-hidden w-full h-[120px]">
+                {/* Simulated Carousel of Projects - showing the first one mainly, or mapping through all gracefully fading */}
+                {projects.slice(0, 5).map((project: any, index: number) => (
+                  <div class={`absolute inset-0 transition-opacity duration-500 flex flex-col justify-end ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} style={`animation: carousel ${projects.slice(0, 5).length * 4}s infinite; animation-delay: ${index * 4}s;`}>
+                    <h3 class="text-xl text-text-main font-medium mb-2 truncate">
+                      {project.title}
+                    </h3>
+                    <p class="text-sm text-text-muted max-w-sm mb-6 line-clamp-2">
+                      {project.description}
+                    </p>
+                  </div>
+                ))}
               </div>
-              <p class="text-sm text-text-muted line-clamp-2 mb-3">
-                {project.description}
-              </p>
-              <div class="flex gap-2 opacity-60 group-hover/item:opacity-100 transition-opacity">
-                {project.tech_stack.slice(0, 3).map(t => <TechBadge label={t} />)}
+            ) : (
+              <div>
+                <h3 class="text-xl text-text-main font-medium mb-2">Projects Offline</h3>
+                <p class="text-sm text-text-muted max-w-sm mb-6">Unable to load dynamic projects from Edge API.</p>
               </div>
-            </div>
-          )) : (
-             /* Console Log Fallback for Empty/Error State */
-             <div class="col-span-2 font-mono text-xs text-text-muted space-y-2 opacity-70">
-                <p>> Initiating handshake with {import.meta.env.PUBLIC_API_URL || "localhost:3001"}...</p>
-                <p class="text-red-400">> Error: {error || "Connection refused"}</p>
-                <p>> Loading fallback data...</p>
-             </div>
-          )}
+            )}
+            
+            {projects.length > 0 && (
+              <div class="flex items-center gap-2 max-w-xs mt-4">
+                {projects.slice(0, 5).map((_: any, idx: number) => (
+                  <div class="h-1 bg-white/10 flex-1 rounded-full overflow-hidden relative">
+                     <div class="absolute inset-y-0 left-0 bg-text-main opacity-0 w-full" style={`animation: progress ${projects.slice(0, 5).length * 4}s infinite; animation-delay: ${idx * 4}s;`}></div>
+                     {/* For a static fallback, just highlight the first one */}
+                     {idx === 0 && <div class="absolute inset-y-0 left-0 bg-text-main/50 w-full hidden"></div>}
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            <style>
+              @keyframes carousel {
+                0%, 15% { opacity: 1; z-index: 10; }
+                20%, 100% { opacity: 0; z-index: 0; }
+              }
+              @keyframes progress {
+                0% { width: 0%; opacity: 1; }
+                15% { width: 100%; opacity: 1; }
+                15.1%, 100% { width: 100%; opacity: 0; }
+              }
+            </style>
         </div>
       </Card>
 

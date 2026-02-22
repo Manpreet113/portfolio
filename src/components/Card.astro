@@ -3,8 +3,9 @@ interface Props {
   class?: string;
   colSpan?: string;
   rowSpan?: string;
+  [key: string]: any;
 }
-const { class: className, colSpan = "col-span-1", rowSpan = "row-span-1" } = Astro.props;
+const { class: className, colSpan = "col-span-1", rowSpan = "row-span-1", ...rest } = Astro.props;
 ---
 <div class={`
   bg-surface border border-border p-6 rounded-xl relative overflow-hidden group
@@ -14,6 +15,6 @@ const { class: className, colSpan = "col-span-1", rowSpan = "row-span-1" } = Ast
   active:scale-[0.99]
   flex flex-col justify-between
   ${colSpan} ${rowSpan} ${className}
-`}>
+`} {...rest}>
   <slot />
 </div>
