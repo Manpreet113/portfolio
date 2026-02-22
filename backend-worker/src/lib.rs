@@ -1,6 +1,7 @@
 use worker::*;
 use worker::wasm_bindgen::JsValue;
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 // --- STRUCTS ---
 #[derive(Serialize, Deserialize)]
@@ -17,7 +18,7 @@ struct Project {
     demo_url: Option<String>,
 
     #[serde(default)]
-    is_featured: Option<bool>,
+    is_featured: Option<Value>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -132,7 +133,13 @@ pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
             
             let gh_url = p.github_url.map(JsValue::from).unwrap_or(JsValue::NULL);
             let demo_url = p.demo_url.map(JsValue::from).unwrap_or(JsValue::NULL);
-            let is_featured = p.is_featured.unwrap_or(false);
+            
+            let is_featured = match p.is_featured {
+                Some(Value::Bool(b)) => b,
+                Some(Value::Number(n)) => n.as_i64().unwrap_or(0) != 0,
+                Some(Value::String(s)) => s == "true" || s == "1",
+                _ => false,
+            };
 
             let query = "UPDATE projects SET title=?, description=?, tech_stack=?, github_url=?, demo_url=?, is_featured=? WHERE id=?";
             let _ = d1.prepare(query)
