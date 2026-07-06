@@ -19,7 +19,7 @@ const { project } = Astro.props;
 
 <article class="project-card card">
   <div class="image-wrapper">
-    <img src={project.image} alt={`Visual representation of ${project.name}`} loading="lazy" />
+    <img src={project.image} alt={`Visual representation of ${project.name}`} width="800" height="500" decoding="async" loading="lazy" />
   </div>
 
   <div class="card-content">

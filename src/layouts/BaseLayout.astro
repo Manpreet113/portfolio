@@ -14,7 +14,7 @@ const {
   description = 'Manpreet — Software developer crafting thoughtful digital experiences.',
 } = Astro.props;
 
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://manpreet.dev');
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://manpreet.tech');
 ---
 
 <!DOCTYPE html>
@@ -31,11 +31,16 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://manpreet
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:site_name" content="Manpreet" />
+    <meta property="og:image" content={new URL('/images/og-image.png', Astro.site ?? 'https://manpreet.tech')} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Manpreet — Software Developer Portfolio" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL('/images/og-image.png', Astro.site ?? 'https://manpreet.tech')} />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonicalUrl} />
