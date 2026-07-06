@@ -1,0 +1,42 @@
+[
+  {
+    "name": "ax",
+    "tagline": "A pacman wrapper that started as \"can I do this in Rust?\" and became an endless void.",
+    "description": "Born from over a year of daily-driving vanilla Arch with Hyprland, ax started as a curiosity — \"yay isn't written in Rust, can I make something even remotely close?\" What began as a simple pacman wrapper shelling out commands evolved into a full-featured package management companion for Arch Linux. Supports standard pacman operations, transparent flag passthrough, and is published on crates.io.",
+    "tech": ["Rust", "Cargo", "Arch Linux"],
+    "github": "https://github.com/Manpreet113/ax",
+    "live": null,
+    "image": "/images/project-ax.png",
+    "featured": true
+  },
+  {
+    "name": "Vellum",
+    "tagline": "A clean, offline reader for people who just want to read.",
+    "description": "A modern Android reader designed for comic book archives (CBZ), EPUBs, and PDFs. Built because most readers are either bloated with features nobody asked for or missing the basics. Vellum focuses on being clean, offline-first, and supporting multiple formats without the noise. Built with Kotlin and Jetpack Compose following modern Android architecture.",
+    "tech": ["Kotlin", "Jetpack Compose", "Android"],
+    "github": "https://github.com/Manpreet113/Vellum",
+    "live": null,
+    "image": "/images/project-vellum.png",
+    "featured": true
+  },
+  {
+    "name": "HeadMod",
+    "tagline": "A Discord moderation bot built out of pure curiosity.",
+    "description": "An event-driven Discord moderation bot written in Rust. Inspired by the \"Security\" bot, HeadMod was built purely because the idea sounded interesting. Features role persistence, event logging, and moderation tools — all powered by Rust's async ecosystem. A project where the architecture mattered as much as the features.",
+    "tech": ["Rust", "Async", "Discord API"],
+    "github": "https://github.com/Manpreet113/HeadMod",
+    "live": null,
+    "image": "/images/project-headmod.png",
+    "featured": true
+  },
+  {
+    "name": "shortun",
+    "tagline": "A URL shortener — because every developer builds one eventually.",
+    "description": "A URL shortener built to explore backend fundamentals: routing, data persistence, and tracking. The backend runs on Axum with PostgreSQL, while the frontend is deployed on Vercel. Simple, functional, and a solid exercise in full-stack thinking.",
+    "tech": ["TypeScript", "Axum", "PostgreSQL"],
+    "github": "https://github.com/Manpreet113/shortun",
+    "live": "https://shortun.vercel.app",
+    "image": "/images/project-shortun.png",
+    "featured": true
+  }
+]

@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import projects from '../data/projects.json';
+---
+
+<BaseLayout
+  title="Projects — Manpreet"
+  description="A collection of things I've built — tools, apps, and experiments born from curiosity."
+>
+  <!-- Header -->
+  <section class="section projects-header-section">
+    <div class="container">
+      <div class="section-heading reveal">
+        <span class="eyebrow">// projects</span>
+        <h1>Things I've built</h1>
+        <p class="subtitle">
+          Every project here started as "I wonder if..." — a curiosity that
+          turned into code. Some solve real problems, some are just me poking
+          at how things work under the hood.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Grid -->
+  <section class="section projects-grid-section">
+    <div class="container">
+      <div class="projects-grid stagger">
+        {projects.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .projects-header-section {
+    padding-bottom: 0;
+  }
+
+  .projects-header-section .section-heading h1 {
+    margin-bottom: var(--space-md);
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    max-width: 55ch;
+    color: var(--color-text-tertiary);
+    line-height: 1.8;
+  }
+
+  .projects-grid-section {
+    padding-top: var(--space-2xl);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xl);
+  }
+
+  @media (max-width: 768px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import projects from '../data/projects.json';
+
+const featuredProjects = projects.slice(0, 2);
+---
+
+<BaseLayout
+  title="Manpreet — Builder of things"
+  description="Developer, tinkerer, and relentless learner. Building tools out of curiosity in Rust, Kotlin, TypeScript, and whatever catches my eye next."
+>
+  <Hero />
+
+  <!-- Featured Projects -->
+  <section class="section">
+    <div class="container">
+      <div class="section-heading reveal">
+        <span class="eyebrow">// featured work</span>
+        <h2>Things I've built</h2>
+        <p>Projects born from curiosity — each one started as "I wonder if I can..."</p>
+      </div>
+
+      <div class="projects-grid stagger">
+        {featuredProjects.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+
+      <div class="view-all reveal">
+        <a href="/projects" class="view-all-link">
+          View all projects
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xl);
+    margin-bottom: var(--space-3xl);
+  }
+
+  @media (max-width: 768px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .view-all {
+    text-align: center;
+  }
+
+  .view-all-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: var(--color-accent);
+    transition: all var(--duration-normal) var(--ease-out);
+  }
+
+  .view-all-link:hover {
+    color: var(--color-accent-hover);
+    gap: var(--space-md);
+  }
+
+  .view-all-link .arrow {
+    transition: transform var(--duration-normal) var(--ease-spring);
+    display: inline-block;
+  }
+
+  .view-all-link:hover .arrow {
+    transform: translateX(4px);
+  }
+</style>

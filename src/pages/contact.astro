@@ -1,0 +1,359 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+---
+
+<BaseLayout
+  title="Contact — Manpreet"
+  description="Get in touch — whether it's about a project, a collaboration, or just to say hi."
+>
+  <!-- Header -->
+  <section class="section contact-header-section">
+    <div class="container">
+      <div class="section-heading reveal">
+        <span class="eyebrow">// contact</span>
+        <h1>Let's connect</h1>
+        <p class="subtitle">
+          I'm always open to talking about Rust, system rices, Android internals, or interesting development opportunities. Here's how to reach me.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Cards Grid -->
+  <section class="section contact-content-section">
+    <div class="container">
+      <div class="contact-grid">
+        <!-- Main Email Connect Card -->
+        <div class="email-card-wrapper reveal-left">
+          <div class="email-card card">
+            <span class="card-eyebrow font-mono text-accent">Preferred Route</span>
+            <h2>Send an email</h2>
+            <p class="card-desc">
+              Have an idea, project, or just want to chat? Email is the best way to get a quick response.
+            </p>
+
+            <div class="email-copy-container">
+              <a href="mailto:manpreet10542@gmail.com" class="email-link font-mono" id="email-address">
+                manpreet10542@gmail.com
+              </a>
+              <button class="copy-button" id="copy-email-btn" aria-label="Copy email address to clipboard">
+                <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span class="tooltip" id="copy-tooltip">Copy</span>
+              </button>
+            </div>
+
+            <a href="mailto:manpreet10542@gmail.com" class="btn btn-primary email-cta-btn">
+              Open Mail Client
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Sidebar cards -->
+        <div class="contact-sidebar reveal-right">
+          <!-- Availability Card -->
+          <div class="availability-card card">
+            <div class="availability-indicator">
+              <span class="status-dot"></span>
+              <span class="font-mono">Available for work</span>
+            </div>
+            <p>
+              Currently open to interesting projects, backend/systems collaborations, and learning opportunities.
+            </p>
+            <div class="facts-list font-mono">
+              <div class="fact-item">
+                <span class="fact-label">Timezone:</span>
+                <span class="fact-val">IST (UTC +5:30)</span>
+              </div>
+              <div class="fact-item">
+                <span class="fact-label">Location:</span>
+                <span class="fact-val">Haryana, India</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Socials Connect Card -->
+          <div class="socials-connect-card card">
+            <h3>Find me online</h3>
+            <p class="social-desc">Feel free to follow my work or connect on professional networks.</p>
+            
+            <div class="socials-box">
+              <SocialLinks size="lg" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  function initCopyEmail() {
+    const copyBtn = document.getElementById('copy-email-btn');
+    const tooltip = document.getElementById('copy-tooltip');
+    const emailLink = document.getElementById('email-address');
+
+    if (!copyBtn || !tooltip || !emailLink) return;
+
+    copyBtn.addEventListener('click', async () => {
+      const email = emailLink.textContent?.trim() || 'manpreet10542@gmail.com';
+      try {
+        await navigator.clipboard.writeText(email);
+        tooltip.textContent = 'Copied!';
+        tooltip.classList.add('active');
+        
+        setTimeout(() => {
+          tooltip.textContent = 'Copy';
+          tooltip.classList.remove('active');
+        }, 2000);
+      } catch (err) {
+        tooltip.textContent = 'Failed';
+      }
+    });
+  }
+
+  // Run on initial load
+  initCopyEmail();
+
+  // Run on View Transitions page swap
+  document.addEventListener('astro:after-swap', initCopyEmail);
+</script>
+
+<style>
+  .contact-header-section {
+    padding-bottom: 0;
+  }
+
+  .contact-header-section .section-heading h1 {
+    margin-bottom: var(--space-md);
+  }
+
+  .subtitle {
+    font-size: 1.15rem;
+    max-width: 55ch;
+    color: var(--color-text-tertiary);
+    line-height: 1.8;
+  }
+
+  .contact-content-section {
+    padding-top: var(--space-xl);
+  }
+
+  /* Grid Layout */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: var(--space-3xl);
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-2xl);
+    }
+  }
+
+  /* Main Email Card */
+  .email-card {
+    padding: var(--space-2xl);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .card-eyebrow {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-xs);
+    display: block;
+  }
+
+  .email-card h2 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    margin-bottom: var(--space-md);
+  }
+
+  .card-desc {
+    font-size: 1.05rem;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-bottom: var(--space-2xl);
+    max-width: 48ch;
+  }
+
+  .email-copy-container {
+    display: flex;
+    align-items: center;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin-bottom: var(--space-2xl);
+    position: relative;
+    max-width: fit-content;
+  }
+
+  .email-link {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-weight: 500;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    margin-right: var(--space-xl);
+  }
+
+  .copy-button {
+    background: transparent;
+    border: none;
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xs);
+    border-radius: var(--radius-sm);
+    transition: all var(--duration-fast) var(--ease-out);
+    position: relative;
+  }
+
+  .copy-button:hover {
+    color: var(--color-accent);
+    background: var(--color-accent-subtle);
+  }
+
+  /* Tooltip styling */
+  .tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+    opacity: 0;
+    transition: all var(--duration-fast) var(--ease-out);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: var(--color-bg-tertiary);
+  }
+
+  .copy-button:hover .tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .tooltip.active {
+    background: var(--color-accent);
+    color: var(--color-bg-primary);
+  }
+
+  .tooltip.active::after {
+    border-top-color: var(--color-accent);
+  }
+
+  .email-cta-btn {
+    align-self: flex-start;
+  }
+
+  /* Sidebar styling */
+  .contact-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  /* Availability Card */
+  .availability-card {
+    background: var(--color-accent-subtle);
+    border-color: var(--color-accent-muted);
+  }
+
+  .availability-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
+    font-size: 0.9rem;
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-full);
+    background: var(--color-success);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.3); }
+  }
+
+  .availability-card p {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-lg);
+  }
+
+  .facts-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-md);
+  }
+
+  .fact-item {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .fact-label {
+    color: var(--color-text-muted);
+  }
+
+  .fact-val {
+    color: var(--color-text-secondary);
+  }
+
+  /* Socials Connect Card */
+  .socials-connect-card h3 {
+    margin-bottom: var(--space-xs);
+  }
+
+  .social-desc {
+    font-size: 0.9rem;
+    color: var(--color-text-tertiary);
+    line-height: 1.5;
+    margin-bottom: var(--space-lg);
+  }
+
+  .socials-box {
+    padding-top: var(--space-sm);
+  }
+</style>

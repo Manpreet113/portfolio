@@ -1,0 +1,125 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Manpreet — Software developer crafting thoughtful digital experiences.',
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://manpreet.dev');
+---
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="author" content="Manpreet" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content="Manpreet" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <title>{title}</title>
+
+    <ClientRouter />
+
+    <!-- Inline theme initialization — runs before paint to prevent flash -->
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+  </head>
+
+  <body>
+    <Navbar />
+    <main class="page-content">
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- Scroll reveal observer and theme persistent helper -->
+    <script>
+      function initScrollReveal() {
+        const selectors = '.reveal, .reveal-left, .reveal-right, .reveal-scale, .stagger';
+        const elements = document.querySelectorAll(selectors);
+
+        if (!elements.length) return;
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: 0.15,
+            rootMargin: '0px 0px -40px 0px',
+          }
+        );
+
+        elements.forEach((el) => observer.observe(el));
+      }
+
+      function applyTheme() {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+
+      function getTheme() {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return stored || (prefersDark ? 'dark' : 'light');
+      }
+
+      // Run on initial load
+      initScrollReveal();
+
+      // Before swap: set correct theme on the new page document before it is swapped into the viewport
+      document.addEventListener('astro:before-swap', (event) => {
+        const docEvent = event as any;
+        if (docEvent.newDocument) {
+          docEvent.newDocument.documentElement.setAttribute('data-theme', getTheme());
+        }
+      });
+
+      // Re-run after View Transition swap
+      document.addEventListener('astro:after-swap', () => {
+        initScrollReveal();
+      });
+    </script>
+  </body>
+</html>

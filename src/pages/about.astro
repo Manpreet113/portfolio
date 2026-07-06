@@ -1,0 +1,264 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SkillsGrid from '../components/SkillsGrid.astro';
+---
+
+<BaseLayout
+  title="About — Manpreet"
+  description="Curious builder, Arch Linux enthusiast, and someone who thinks working and learning are the same thing."
+>
+  <!-- Hero Header -->
+  <section class="section about-hero">
+    <div class="container">
+      <div class="about-header reveal">
+        <span class="eyebrow font-mono text-accent">// about</span>
+        <h1>A curious builder</h1>
+        <p class="intro-text">
+          I'm Manpreet — a developer who builds things to understand how they work.
+          Not because someone asked me to, but because I saw something and thought
+          <em>"hmm, that's not in Rust — can I make one?"</em> and then couldn't stop
+          until I did.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Philosophy / Story -->
+  <section class="section">
+    <div class="container">
+      <div class="philosophy-grid">
+        <div class="philosophy-content reveal">
+          <h2>How I think about building</h2>
+
+          <p>
+            I daily-drove vanilla Arch with Hyprland for over a year. Not because
+            I needed to — because I wanted to understand every layer between me
+            and the hardware. That same itch drives everything I build. When I
+            saw that <code>yay</code> wasn't written in Rust, my brain went
+            "can I make something even remotely close?" — and
+            <a href="https://github.com/Manpreet113/ax">ax</a> happened. A pacman
+            wrapper that started as a weekend experiment and turned into a proper
+            tool published on crates.io.
+          </p>
+
+          <p>
+            Vellum exists because every EPUB and CBZ reader I tried was either
+            bloated beyond belief or missing the basics. I didn't just want a
+            better reader — I wanted to understand how a CBZ archive is structured,
+            how an EPUB gets rendered, how Room and Hilt play together in a modern
+            Android stack. The final product is nice, but the real reward was the
+            rabbit holes I fell into along the way.
+          </p>
+
+          <p>
+            I don't really believe in titles. "Frontend dev," "backend dev,"
+            "mobile dev" — they box you into role limitations that don't exist
+            in the real world. A problem doesn't care what your LinkedIn says.
+            I write Rust, Kotlin, TypeScript, whatever the problem needs. The
+            point is to solve it well and understand every line you wrote while
+            doing it.
+          </p>
+
+          <p>
+            Even now, with AI writing code faster than most of us can read it,
+            I think developers are more responsible than ever — for architecture,
+            for understanding each line, for finding the edge cases that a model
+            won't catch. The tools change. The thinking doesn't.
+          </p>
+
+          <p>
+            Working <em>is</em> learning. They've never been separate things
+            for me. Every project teaches me something I didn't expect, every
+            rabbit hole leads somewhere interesting, and it's genuinely fun to
+            keep learning new technologies in this ever-growing field of 0s and 1s.
+          </p>
+
+          <p class="bio-sign font-mono text-muted">
+            Just here until my kernel panics.
+          </p>
+        </div>
+
+        <aside class="philosophy-aside reveal-right">
+          <div class="aside-card card">
+            <h4>Quick bits</h4>
+            <dl class="quick-facts">
+              <div class="fact">
+                <dt class="font-mono text-accent">Location</dt>
+                <dd>Haryana, India</dd>
+              </div>
+              <div class="fact">
+                <dt class="font-mono text-accent">Daily driver</dt>
+                <dd>Arch Linux (btw)</dd>
+              </div>
+              <div class="fact">
+                <dt class="font-mono text-accent">Languages</dt>
+                <dd>Rust, Kotlin, TypeScript</dd>
+              </div>
+              <div class="fact">
+                <dt class="font-mono text-accent">Philosophy</dt>
+                <dd>Build to learn, learn to build</dd>
+              </div>
+              <div class="fact">
+                <dt class="font-mono text-accent">Status</dt>
+                <dd>Kernel hasn't panicked yet</dd>
+              </div>
+            </dl>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section class="section">
+    <div class="container">
+      <div class="section-heading reveal">
+        <span class="eyebrow">// toolkit</span>
+        <h2>What I work with</h2>
+        <p>Languages, frameworks, and tools I reach for — not because they're trendy, but because they solve real problems well.</p>
+      </div>
+      <SkillsGrid />
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section cta-section">
+    <div class="container">
+      <div class="cta-block reveal">
+        <h2>Want to work together?</h2>
+        <p>
+          I'm always open to interesting projects, collaborations, or just
+          talking about Rust and window managers.
+        </p>
+        <a href="/contact" class="btn btn-primary">Get in touch</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-hero {
+    padding-bottom: var(--space-2xl);
+  }
+
+  .about-header .eyebrow {
+    display: inline-block;
+    font-size: 0.85rem;
+    margin-bottom: var(--space-sm);
+    letter-spacing: 0.05em;
+  }
+
+  .about-header h1 {
+    margin-bottom: var(--space-xl);
+  }
+
+  .intro-text {
+    font-size: clamp(1.15rem, 2.5vw, 1.35rem);
+    line-height: 1.8;
+    max-width: 55ch;
+    color: var(--color-text-secondary);
+  }
+
+  .intro-text em {
+    color: var(--color-accent);
+    font-style: italic;
+  }
+
+  /* Philosophy Grid */
+  .philosophy-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: var(--space-4xl);
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .philosophy-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-2xl);
+    }
+  }
+
+  .philosophy-content h2 {
+    margin-bottom: var(--space-xl);
+  }
+
+  .philosophy-content p {
+    margin-bottom: var(--space-lg);
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .philosophy-content code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    color: var(--color-accent);
+    background: var(--color-accent-subtle);
+    padding: 0.15em 0.4em;
+    border-radius: var(--radius-sm);
+  }
+
+  .philosophy-content a {
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent-muted);
+    text-underline-offset: 3px;
+    transition: text-decoration-color var(--duration-fast) var(--ease-out);
+  }
+
+  .philosophy-content a:hover {
+    text-decoration-color: var(--color-accent);
+  }
+
+  .bio-sign {
+    margin-top: var(--space-2xl);
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* Aside Card */
+  .aside-card {
+    position: sticky;
+    top: calc(var(--nav-height) + var(--space-xl));
+  }
+
+  .aside-card h4 {
+    margin-bottom: var(--space-lg);
+  }
+
+  .quick-facts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .fact dt {
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-xs);
+  }
+
+  .fact dd {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+  }
+
+  /* CTA */
+  .cta-block {
+    text-align: center;
+    padding: var(--space-4xl) var(--space-xl);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border);
+  }
+
+  .cta-block h2 {
+    margin-bottom: var(--space-md);
+  }
+
+  .cta-block p {
+    margin: 0 auto var(--space-xl);
+    max-width: 45ch;
+    color: var(--color-text-tertiary);
+    font-size: 1.1rem;
+  }
+</style>
