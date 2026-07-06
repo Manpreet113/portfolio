@@ -6,7 +6,7 @@
     "tech": ["Rust", "Cargo", "Arch Linux"],
     "github": "https://github.com/Manpreet113/ax",
     "live": null,
-    "image": "/images/project-ax.png",
+    "image": "/images/project-ax.webp",
     "featured": true
   },
   {
@@ -16,7 +16,7 @@
     "tech": ["Kotlin", "Jetpack Compose", "Android"],
     "github": "https://github.com/Manpreet113/Vellum",
     "live": null,
-    "image": "/images/project-vellum.png",
+    "image": "/images/project-vellum.webp",
     "featured": true
   },
   {
@@ -26,7 +26,7 @@
     "tech": ["Rust", "Async", "Discord API"],
     "github": "https://github.com/Manpreet113/HeadMod",
     "live": null,
-    "image": "/images/project-headmod.png",
+    "image": "/images/project-headmod.webp",
     "featured": true
   },
   {
@@ -36,7 +36,7 @@
     "tech": ["TypeScript", "Axum", "PostgreSQL"],
     "github": "https://github.com/Manpreet113/shortun",
     "live": "https://shortun.vercel.app",
-    "image": "/images/project-shortun.png",
+    "image": "/images/project-shortun.webp",
     "featured": true
   }
 ]

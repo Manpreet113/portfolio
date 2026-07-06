@@ -1,0 +1,26 @@
+# Manpreet's Developer Profile
+
+This is the developer portfolio website for Manpreet, an Arch Linux enthusiast, systems programmer, and creator of developer tooling, systems utilities, and Android apps.
+
+## Key Information
+
+- **Name**: Manpreet
+- **Email**: manpreet10542@gmail.com
+- **GitHub**: [github.com/manpreet113](https://github.com/manpreet113)
+- **LinkedIn**: [linkedin.com/in/manpreet113](https://linkedin.com/in/manpreet113)
+- **Timezone**: IST (UTC +5:30)
+- **Location**: Haryana, India
+
+## Main Pages
+
+- [Home Page](https://manpreet.tech/)
+- [About Page](https://manpreet.tech/about)
+- [Projects Page](https://manpreet.tech/projects)
+- [Contact Page](https://manpreet.tech/contact)
+
+## Featured Projects
+
+- [ax](https://github.com/Manpreet113/ax) — A pacman wrapper for Arch Linux written in Rust.
+- [Vellum](https://github.com/Manpreet113/Vellum) — A modern Android reader for CBZ, EPUB, and PDF written in Kotlin.
+- [HeadMod](https://github.com/Manpreet113/HeadMod) — An event-driven Discord moderation bot written in Rust.
+- [shortun](https://github.com/Manpreet113/shortun) — A URL shortener built with Axum (Rust), PostgreSQL, and TypeScript.
